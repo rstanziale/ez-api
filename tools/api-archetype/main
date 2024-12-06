@@ -1,0 +1,17 @@
+import "@typespec/http";
+import "@typespec/openapi";
+import "@typespec/versioning";
+
+using TypeSpec.Http;
+using TypeSpec.OpenAPI;
+using TypeSpec.Versioning;
+
+@service({
+  title: "#{PROJECT_NAME} APIs",
+})
+@versioned(Versions)
+namespace #{PROJECT_NAMESPACE}Namespace;
+
+enum Versions {
+  `1.0.0-beta.1`,
+}
