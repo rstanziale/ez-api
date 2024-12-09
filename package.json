@@ -6,7 +6,11 @@
     "type": "git",
     "url": "https://github.com/rstanziale/ez-api.git"
   },
-  "keywords": ["typespec", "api", "typescript"],
+  "keywords": [
+    "typespec",
+    "api",
+    "typescript"
+  ],
   "scripts": {
     "format": "tsp format \"**/*.tsp\"",
     "api:new": "ts-node --project tools/tsconfig.json tools/api-new.ts",
@@ -21,6 +25,7 @@
     "@typespec/rest": "latest"
   },
   "devDependencies": {
+    "@types/node": "^22.10.1",
     "@typespec/compiler": "latest",
     "@typespec/http": "latest",
     "@typespec/openapi3": "latest",
