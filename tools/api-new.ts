@@ -9,11 +9,15 @@ const apiNew = (): void => {
   const projectDir: string = process.argv[2];
 
   try {
-    console.log(`Creating new API project ${projectDir}...`);
+    if (!projectDir) {
+      throw new Error('No project name specified');
+    }
 
     if (existProjectDir(projectDir)) {
       throw new Error(`API project ${projectDir} already exists`);
     }
+
+    console.log(`Creating new API project ${projectDir}...`);
 
     createProjectDir(projectDir);
     createConfigFile(projectDir);
@@ -123,6 +127,10 @@ const updatePackageJson = (projectDir: string): void => {
     `tsp compile projects/${projectDir}/main.tsp --config \"./projects/${projectDir}/tspconfig-json.yaml\"`;
   packageJson['scripts'][`watch:${projectDir}`] =
     `tsp compile projects/${projectDir}/main.tsp --watch --emit @typespec/openapi3`;
+
+  // Update build all script
+  const buildAllScript = packageJson['scripts']['build:all'];
+  packageJson['scripts']['build:all'] = buildAllScript.concat(` compile:${projectDir}`);
 
   // Write package.json
   writeFileSync(join(sourceDir, 'package.json'), JSON.stringify(packageJson, null, 2));

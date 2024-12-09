@@ -1,11 +1,19 @@
 {
-  "name": "ez-api",
+  "name": "@rs-box/ez-api",
   "version": "1.0.0",
+  "description": "API development toolkit powered by TypeSpec",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rstanziale/ez-api.git"
+  },
+  "keywords": ["typespec", "api", "typescript"],
   "scripts": {
     "format": "tsp format \"**/*.tsp\"",
-    "api:new": "ts-node --project tools/tsconfig.json tools/api-new.ts my-awesome-api",
+    "api:new": "ts-node --project tools/tsconfig.json tools/api-new.ts",
     "build:all": "npm-run-all --parallel"
   },
+  "author": "Roberto B. Stanziale",
+  "license": "MIT",
   "peerDependencies": {
     "@typespec/compiler": "latest",
     "@typespec/http": "latest",

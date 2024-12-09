@@ -31,10 +31,10 @@ npm install
 
 ### Quick Start
 
-1. In `package.json`, edit the `api:new` script by adding the name of your project (_my-awesome-api_), then run:
+1. Create your first API project:
 
 ```bash
-npm run api:new
+npm run api:new my-awesome-api
 ```
 
 2. Customize project settings in `config.json`:
