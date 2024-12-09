@@ -1,0 +1,4 @@
+{
+  "*.(json|ts)": ["prettier --ignore-path .prettierignore --write"],
+  "*.(tsp)": ["tsp format \"**/*.tsp\""]
+}
