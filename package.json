@@ -22,16 +22,20 @@
   "peerDependencies": {
     "@typespec/compiler": "latest",
     "@typespec/http": "latest",
+    "@typespec/openapi": "latest",
     "@typespec/openapi3": "latest",
-    "@typespec/rest": "latest"
+    "@typespec/rest": "latest",
+    "@typespec/versioning": "latest"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
     "@typespec/compiler": "latest",
     "@typespec/http": "latest",
+    "@typespec/openapi": "latest",
     "@typespec/openapi3": "latest",
     "@typespec/prettier-plugin-typespec": "^0.62.0",
     "@typespec/rest": "latest",
+    "@typespec/versioning": "latest",
     "fs-extra": "^11.2.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.10",
