@@ -142,7 +142,7 @@ const updatePackageJson = (projectDir: string): void => {
  * Return input as CamelCase
  * @param input string to transform
  */
-const toCamelCase = (input: string): string => {
+export const toCamelCase = (input: string): string => {
   // Remove special characters and split by hyphen
   const words = input.split('-');
 
@@ -156,7 +156,7 @@ const toCamelCase = (input: string): string => {
  * Return input as sentence like Word1 Word2
  * @param input string to transform
  */
-const toSentence = (input: string): string => {
+export const toSentence = (input: string): string => {
   // Remove special characters and split by hyphen
   const words = input.split('-');
 

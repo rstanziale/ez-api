@@ -73,7 +73,7 @@ const setDistFiles = (files: string[] = [], projectDir: string, version: string)
  * @param version string to apply
  * @returns new filename
  */
-const setFilenameVersion = (name: string, version: string): string => {
+export const setFilenameVersion = (name: string, version: string): string => {
   const pattern = /x\.y\.z/;
 
   return name.replace(pattern, version);
