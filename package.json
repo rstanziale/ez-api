@@ -29,7 +29,7 @@
     "@typespec/versioning": "latest"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.6.1",
+    "@commitlint/cli": "^19.7.1",
     "@commitlint/config-conventional": "^19.6.0",
     "@types/node": "^22.13.0",
     "@typespec/compiler": "latest",
