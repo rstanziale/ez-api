@@ -1,5 +1,4 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { readJSONSync } from 'fs-extra';
 import { join, resolve } from 'path';
 
 /**
@@ -10,7 +9,8 @@ import { join, resolve } from 'path';
  */
 export const getVersion = (projectDir: string): string => {
   const configDir = resolve(__dirname, '..', '..', 'projects', projectDir);
-  const configJson = readJSONSync(join(configDir, 'config.json'));
+  const configJsonFile = readFileSync(join(configDir, 'config.json'), 'utf-8');
+  const configJson = JSON.parse(configJsonFile);
 
   return configJson['version'] ?? '0.0.0';
 };
@@ -22,7 +22,8 @@ export const getVersion = (projectDir: string): string => {
  */
 export const getFilenames = (projectDir: string): string[] => {
   const configDir = resolve(__dirname, '..', '..', 'projects', projectDir);
-  const configJson = readJSONSync(join(configDir, 'config.json'));
+  const configJsonFile = readFileSync(join(configDir, 'config.json'), 'utf-8');
+  const configJson = JSON.parse(configJsonFile);
   const filename = configJson['filename'] ?? 'api';
 
   return ['json', 'yaml'].map(ext => `${filename}-x.y.z.${ext}`);

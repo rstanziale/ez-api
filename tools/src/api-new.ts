@@ -1,5 +1,4 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { readJSONSync } from 'fs-extra';
 import { join, resolve } from 'path';
 
 const PROJECT_NAME = /\#{PROJECT_NAME}/g;
@@ -31,7 +30,8 @@ export const createProjectDir = (projectDir: string): void => {
 export const createConfigFile = (projectDir: string): void => {
   // Read from archetype dir config.json file
   const sourceDir = resolve(__dirname, '..', 'api-archetype');
-  const configJson = readJSONSync(join(sourceDir, 'config.json'));
+  const configJsonFile = readFileSync(join(sourceDir, 'config.json'), 'utf-8');
+  const configJson = JSON.parse(configJsonFile);
 
   // Override placeholder
   configJson['filename'] = configJson['filename'].replace(PROJECT_NAME, projectDir);
@@ -87,7 +87,8 @@ export const createMainFile = (projectDir: string): void => {
 export const updatePackageJson = (projectDir: string): void => {
   // Read package.json file
   const sourceDir = resolve(__dirname, '..', '..');
-  const packageJson = readJSONSync(join(sourceDir, 'package.json'));
+  const packageJsonFile = readFileSync(join(sourceDir, 'package.json'), 'utf-8');
+  const packageJson = JSON.parse(packageJsonFile);
 
   // Update scripts
   packageJson['scripts'][`compile:${projectDir}`] =
