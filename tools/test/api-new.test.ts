@@ -1,24 +1,52 @@
-import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
-import { existProjectDir, toCamelCase, toSentence } from '../src/api-new';
-import { existsSync } from 'fs';
-import { resolve } from 'path';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
+import {
+  createConfigFile,
+  createProjectDir,
+  existProjectDir,
+  toCamelCase,
+  toSentence,
+  updatePackageJson,
+  createTspFiles,
+  createMainFile,
+} from '../src/api-new';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { join, resolve } from 'path';
+import { fs, vol } from 'memfs';
 
-describe('api:new scripts', () => {
-  // Mock fs module
-  vi.mock('fs', () => ({
-    existsSync: vi.fn(),
-  }));
+describe.concurrent('api:new scripts', () => {
+  // Tell vitest to use fs mock from __mocks__ folder
+  // This can be done in a setup file if fs should always be mocked
+  vi.mock('node:fs');
+  vi.mock('node:fs/promises');
+
+  beforeAll(() => {
+    // Reset the state of in-memory fs
+    vol.reset();
+
+    // Create a mock directory with archetype files
+    const sourceDir = resolve(__dirname, '..', 'api-archetype');
+    vol.fromJSON(
+      {
+        [join(`${sourceDir}`, 'config.json')]:
+          '{"filename":"api-#{PROJECT_NAME}","version":"1.0.0-beta.1"}',
+        [join(`${sourceDir}`, 'main')]:
+          'import "@typespec/http"; import "@typespec/openapi"; import "@typespec/versioning"; using TypeSpec.Http; using TypeSpec.OpenAPI; using TypeSpec.Versioning; @service({ title: "#{PROJECT_NAME} APIs", }) @versioned(Versions) namespace #{PROJECT_NAMESPACE}Namespace; enum Versions { `1.0.0-beta.1`, }',
+        [join(`${sourceDir}`, 'tspconfig-json')]:
+          'emit: - "@typespec/openapi3" options: "@typespec/openapi3": file-type: json output-file: api-#{PROJECT_NAME}-x.y.z.json emitter-output-dir: "{project-root}/../../doc/api-#{PROJECT_NAME}"',
+        [join(`${sourceDir}`, 'tspconfig-yaml')]:
+          'emit: - "@typespec/openapi3" options: "@typespec/openapi3": file-type: yaml output-file: api-#{PROJECT_NAME}-x.y.z.yaml emitter-output-dir: "{project-root}/../../doc/api-#{PROJECT_NAME}"',
+      },
+      sourceDir
+    );
+  });
 
   describe.concurrent('existProjectDir', () => {
-    beforeEach(() => {
-      vi.clearAllMocks();
-    });
-
     it('should return true when project directory exists', () => {
       // Arrange
-      (existsSync as Mock).mockReturnValue(true);
+      vi.spyOn(fs, 'existsSync');
       const dir = 'test-project';
       const parameter = resolve(__dirname, '..', '..', 'projects', dir);
+      fs.mkdirSync(parameter, { recursive: true });
 
       // Act
       const result = existProjectDir(dir);
@@ -30,22 +58,8 @@ describe('api:new scripts', () => {
 
     it('should return false when project directory does not exist', () => {
       // Arrange
-      (existsSync as Mock).mockReturnValue(false);
+      vi.spyOn(fs, 'existsSync');
       const dir = 'non-existent';
-      const parameter = resolve(__dirname, '..', '..', 'projects', dir);
-
-      // Act
-      const result = existProjectDir(dir);
-
-      // Assert
-      expect(result).toBe(false);
-      expect(existsSync).toHaveBeenCalledWith(parameter);
-    });
-
-    it('should handle empty string input', () => {
-      // Arrange
-      (existsSync as Mock).mockReturnValue(false);
-      const dir = '';
       const parameter = resolve(__dirname, '..', '..', 'projects', dir);
 
       // Act
@@ -58,9 +72,10 @@ describe('api:new scripts', () => {
 
     it('should handle special characters in directory name', () => {
       // Arrange
-      (existsSync as Mock).mockReturnValue(true);
+      vi.spyOn(fs, 'existsSync');
       const dir = 'test@project#123';
       const parameter = resolve(__dirname, '..', '..', 'projects', dir);
+      fs.mkdirSync(parameter, { recursive: true });
 
       // Act
       const result = existProjectDir(dir);
@@ -68,6 +83,374 @@ describe('api:new scripts', () => {
       // Assert
       expect(result).toBe(true);
       expect(existsSync).toHaveBeenCalledWith(parameter);
+    });
+  });
+
+  describe.concurrent('createProjectDir', () => {
+    it('should create a new project directory', () => {
+      // Arrange
+      vi.spyOn(fs, 'mkdirSync');
+      const dir = 'new-project';
+      const parameter = resolve(__dirname, '..', '..', 'projects', dir);
+
+      // Act
+      createProjectDir(dir);
+
+      // Assert
+      expect(existsSync(parameter)).toBe(true);
+      expect(mkdirSync).toHaveBeenCalledWith(parameter, { recursive: true });
+    });
+
+    it('should create nested directories if they do not exist', () => {
+      // Arrange
+      vi.spyOn(fs, 'mkdirSync');
+      const dir = 'nested/project/dir';
+      const parameter = resolve(__dirname, '..', '..', 'projects', dir);
+
+      // Act
+      createProjectDir(dir);
+
+      // Assert
+      expect(existsSync(parameter)).toBe(true);
+      expect(mkdirSync).toHaveBeenCalledWith(parameter, { recursive: true });
+    });
+
+    it('should not throw an error if the directory already exists', () => {
+      // Arrange
+      vi.spyOn(fs, 'mkdirSync');
+      const dir = 'existing-project';
+      const parameter = resolve(__dirname, '..', '..', 'projects', dir);
+      fs.mkdirSync(parameter, { recursive: true });
+
+      // Act & Assert
+      expect(() => createProjectDir(dir)).not.toThrow();
+      expect(mkdirSync).toHaveBeenCalledWith(parameter, { recursive: true });
+    });
+
+    it('should handle special characters in directory name', () => {
+      // Arrange
+      vi.spyOn(fs, 'mkdirSync');
+      const dir = 'special@project#123';
+      const parameter = resolve(__dirname, '..', '..', 'projects', dir);
+
+      // Act
+      createProjectDir(dir);
+
+      // Assert
+      expect(existsSync(parameter)).toBe(true);
+      expect(mkdirSync).toHaveBeenCalledWith(parameter, { recursive: true });
+    });
+
+    it('should handle empty string input', () => {
+      // Arrange
+      vi.spyOn(fs, 'mkdirSync');
+      const dir = '';
+      const parameter = resolve(__dirname, '..', '..', 'projects', dir);
+
+      // Act
+      createProjectDir(dir);
+
+      // Assert
+      expect(existsSync(parameter)).toBe(true);
+      expect(mkdirSync).toHaveBeenCalledWith(parameter, { recursive: true });
+    });
+  });
+
+  describe.concurrent('createConfigFile', () => {
+    it('should create a config.json file with the correct content', () => {
+      // Arrange
+      vi.spyOn(fs, 'writeFileSync');
+      const dir = 'config-project';
+      const parameter = resolve(__dirname, '..', '..', 'projects', dir);
+      fs.mkdirSync(parameter, { recursive: true });
+
+      // Act
+      createConfigFile(dir);
+
+      // Assert
+      const configFilePath = resolve(parameter, 'config.json');
+      expect(existsSync(configFilePath)).toBe(true);
+      const configFile = fs.readFileSync(configFilePath, 'utf-8') as string;
+      const configFileContent = JSON.parse(configFile);
+      expect(configFileContent.filename).toBe(`api-${dir}`);
+      expect(writeFileSync).toHaveBeenCalledWith(configFilePath, configFile);
+    });
+
+    it('should handle special characters in directory name', () => {
+      // Arrange
+      vi.spyOn(fs, 'writeFileSync');
+      const dir = 'special@config#123';
+      const parameter = resolve(__dirname, '..', '..', 'projects', dir);
+      fs.mkdirSync(parameter, { recursive: true });
+
+      // Act
+      createConfigFile(dir);
+
+      // Assert
+      const configFilePath = resolve(parameter, 'config.json');
+      expect(existsSync(configFilePath)).toBe(true);
+      const configFile = fs.readFileSync(configFilePath, 'utf-8') as string;
+      const configFileContent = JSON.parse(configFile);
+      expect(configFileContent.filename).toBe(`api-${dir}`);
+      expect(writeFileSync).toHaveBeenCalledWith(configFilePath, configFile);
+    });
+
+    it('should handle empty string input', () => {
+      // Arrange
+      vi.spyOn(fs, 'writeFileSync');
+      const dir = '';
+      const parameter = resolve(__dirname, '..', '..', 'projects', dir);
+      fs.mkdirSync(parameter, { recursive: true });
+
+      // Act
+      createConfigFile(dir);
+
+      // Assert
+      const configFilePath = resolve(parameter, 'config.json');
+      expect(existsSync(configFilePath)).toBe(true);
+      const configFile = fs.readFileSync(configFilePath, 'utf-8') as string;
+      const configFileContent = JSON.parse(configFile);
+      expect(configFileContent.filename).toBe(`api-${dir}`);
+      expect(writeFileSync).toHaveBeenCalledWith(configFilePath, configFile);
+    });
+  });
+
+  describe.concurrent('createTspFiles', () => {
+    it('should create tspconfig files with the correct content', () => {
+      // Arrange
+      vi.spyOn(fs, 'writeFileSync');
+      const dir = 'tsp-project';
+      const parameter = resolve(__dirname, '..', '..', 'projects', dir);
+      fs.mkdirSync(parameter, { recursive: true });
+
+      // Act
+      createTspFiles(dir);
+
+      // Assert
+      ['tspconfig-json.yaml', 'tspconfig-yaml.yaml'].forEach(filename => {
+        const filePath = resolve(parameter, filename);
+        expect(existsSync(filePath)).toBe(true);
+        const fileContent = fs.readFileSync(filePath, 'utf-8') as string;
+        expect(fileContent).toContain(`api-${dir}-x.y.z`);
+        expect(writeFileSync).toHaveBeenCalledWith(filePath, fileContent);
+      });
+    });
+
+    it('should handle special characters in directory name', () => {
+      // Arrange
+      vi.spyOn(fs, 'writeFileSync');
+      const dir = 'special@tsp#123';
+      const parameter = resolve(__dirname, '..', '..', 'projects', dir);
+      fs.mkdirSync(parameter, { recursive: true });
+
+      // Act
+      createTspFiles(dir);
+
+      // Assert
+      ['tspconfig-json.yaml', 'tspconfig-yaml.yaml'].forEach(filename => {
+        const filePath = resolve(parameter, filename);
+        expect(existsSync(filePath)).toBe(true);
+        const fileContent = fs.readFileSync(filePath, 'utf-8') as string;
+        expect(fileContent).toContain(dir);
+        expect(writeFileSync).toHaveBeenCalledWith(filePath, fileContent);
+      });
+    });
+
+    it('should handle empty string input', () => {
+      // Arrange
+      vi.spyOn(fs, 'writeFileSync');
+      const dir = '';
+      const parameter = resolve(__dirname, '..', '..', 'projects', dir);
+      fs.mkdirSync(parameter, { recursive: true });
+
+      // Act
+      createTspFiles(dir);
+
+      // Assert
+      ['tspconfig-json.yaml', 'tspconfig-yaml.yaml'].forEach(filename => {
+        const filePath = resolve(parameter, filename);
+        expect(existsSync(filePath)).toBe(true);
+        const fileContent = fs.readFileSync(filePath, 'utf-8') as string;
+        expect(fileContent).toContain(dir);
+        expect(writeFileSync).toHaveBeenCalledWith(filePath, fileContent);
+      });
+    });
+  });
+
+  describe.concurrent('createMainFile', () => {
+    it('should create main.tsp file with the correct content', () => {
+      // Arrange
+      vi.spyOn(fs, 'writeFileSync');
+      const dir = 'main-project';
+      const parameter = resolve(__dirname, '..', '..', 'projects', dir);
+      fs.mkdirSync(parameter, { recursive: true });
+
+      // Act
+      createMainFile(dir);
+
+      // Assert
+      const mainFilePath = resolve(parameter, 'main.tsp');
+      expect(existsSync(mainFilePath)).toBe(true);
+      const mainFileContent = fs.readFileSync(mainFilePath, 'utf-8') as string;
+      expect(mainFileContent).toContain(toSentence(dir));
+      expect(mainFileContent).toContain(toCamelCase(dir));
+      expect(writeFileSync).toHaveBeenCalledWith(mainFilePath, mainFileContent);
+    });
+
+    it('should handle special characters in directory name', () => {
+      // Arrange
+      vi.spyOn(fs, 'writeFileSync');
+      const dir = 'special@main#123';
+      const parameter = resolve(__dirname, '..', '..', 'projects', dir);
+      fs.mkdirSync(parameter, { recursive: true });
+
+      // Act
+      createMainFile(dir);
+
+      // Assert
+      const mainFilePath = resolve(parameter, 'main.tsp');
+      expect(existsSync(mainFilePath)).toBe(true);
+      const mainFileContent = fs.readFileSync(mainFilePath, 'utf-8') as string;
+      expect(mainFileContent).toContain(toSentence(dir));
+      expect(mainFileContent).toContain(toCamelCase(dir));
+      expect(writeFileSync).toHaveBeenCalledWith(mainFilePath, mainFileContent);
+    });
+
+    it('should handle empty string input', () => {
+      // Arrange
+      const dir = '';
+      const parameter = resolve(__dirname, '..', '..', 'projects', dir);
+      fs.mkdirSync(parameter, { recursive: true });
+
+      // Act & Assert
+      expect(() => createMainFile(dir)).toThrow();
+    });
+  });
+
+  describe.concurrent('updatePackageJson', () => {
+    it('should update package.json with new scripts', () => {
+      // Arrange
+      vi.spyOn(fs, 'writeFileSync');
+      const dir = 'new-project';
+      const parameter = resolve(__dirname, '..', '..', 'projects', dir);
+      fs.mkdirSync(parameter, { recursive: true });
+
+      const packageJsonPath = resolve(__dirname, '..', '..', 'package.json');
+      const packageJsonContent = {
+        scripts: {
+          'build:all': 'compile:existing-project',
+        },
+      };
+      fs.writeFileSync(packageJsonPath, JSON.stringify(packageJsonContent, null, 2));
+
+      // Act
+      updatePackageJson(dir);
+
+      // Assert
+      const updatedPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8') as string);
+      expect(updatedPackageJson.scripts[`compile:${dir}`]).toBe(
+        `npm-run-all --parallel compile-yaml:${dir} compile-json:${dir}`
+      );
+      expect(updatedPackageJson.scripts[`postcompile:${dir}`]).toBe(
+        `ts-node --project tools/tsconfig.json tools/postbuild.ts ${dir}`
+      );
+      expect(updatedPackageJson.scripts[`compile-yaml:${dir}`]).toBe(
+        `tsp compile projects/${dir}/main.tsp --config "./projects/${dir}/tspconfig-yaml.yaml"`
+      );
+      expect(updatedPackageJson.scripts[`compile-json:${dir}`]).toBe(
+        `tsp compile projects/${dir}/main.tsp --config "./projects/${dir}/tspconfig-json.yaml"`
+      );
+      expect(updatedPackageJson.scripts[`watch:${dir}`]).toBe(
+        `tsp compile projects/${dir}/main.tsp --watch --emit @typespec/openapi3`
+      );
+      expect(updatedPackageJson.scripts['build:all']).toContain(`compile:${dir}`);
+      expect(writeFileSync).toHaveBeenCalledWith(
+        packageJsonPath,
+        JSON.stringify(updatedPackageJson, null, 2)
+      );
+    });
+
+    it('should handle special characters in project directory name', () => {
+      // Arrange
+      vi.spyOn(fs, 'writeFileSync');
+      const dir = 'special@project#123';
+      const parameter = resolve(__dirname, '..', '..', 'projects', dir);
+      fs.mkdirSync(parameter, { recursive: true });
+
+      const packageJsonPath = resolve(__dirname, '..', '..', 'package.json');
+      const packageJsonContent = {
+        scripts: {
+          'build:all': 'compile:existing-project',
+        },
+      };
+      fs.writeFileSync(packageJsonPath, JSON.stringify(packageJsonContent, null, 2));
+
+      // Act
+      updatePackageJson(dir);
+
+      // Assert
+      const updatedPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8') as string);
+      expect(updatedPackageJson.scripts[`compile:${dir}`]).toBe(
+        `npm-run-all --parallel compile-yaml:${dir} compile-json:${dir}`
+      );
+      expect(updatedPackageJson.scripts[`postcompile:${dir}`]).toBe(
+        `ts-node --project tools/tsconfig.json tools/postbuild.ts ${dir}`
+      );
+      expect(updatedPackageJson.scripts[`compile-yaml:${dir}`]).toBe(
+        `tsp compile projects/${dir}/main.tsp --config "./projects/${dir}/tspconfig-yaml.yaml"`
+      );
+      expect(updatedPackageJson.scripts[`compile-json:${dir}`]).toBe(
+        `tsp compile projects/${dir}/main.tsp --config "./projects/${dir}/tspconfig-json.yaml"`
+      );
+      expect(updatedPackageJson.scripts[`watch:${dir}`]).toBe(
+        `tsp compile projects/${dir}/main.tsp --watch --emit @typespec/openapi3`
+      );
+      expect(updatedPackageJson.scripts['build:all']).toContain(`compile:${dir}`);
+      expect(writeFileSync).toHaveBeenCalledWith(
+        packageJsonPath,
+        JSON.stringify(updatedPackageJson, null, 2)
+      );
+    });
+
+    it('should handle empty string input', () => {
+      // Arrange
+      const dir = '';
+      const parameter = resolve(__dirname, '..', '..', 'projects', dir);
+      fs.mkdirSync(parameter, { recursive: true });
+
+      const packageJsonPath = resolve(__dirname, '..', '..', 'package.json');
+      const packageJsonContent = {
+        scripts: {
+          'build:all': 'compile:existing-project',
+        },
+      };
+      fs.writeFileSync(packageJsonPath, JSON.stringify(packageJsonContent, null, 2));
+
+      // Act
+      updatePackageJson(dir);
+
+      // Assert
+      const updatedPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8') as string);
+      expect(updatedPackageJson.scripts[`compile:${dir}`]).toBe(
+        `npm-run-all --parallel compile-yaml:${dir} compile-json:${dir}`
+      );
+      expect(updatedPackageJson.scripts[`postcompile:${dir}`]).toBe(
+        `ts-node --project tools/tsconfig.json tools/postbuild.ts ${dir}`
+      );
+      expect(updatedPackageJson.scripts[`compile-yaml:${dir}`]).toBe(
+        `tsp compile projects/${dir}/main.tsp --config "./projects/${dir}/tspconfig-yaml.yaml"`
+      );
+      expect(updatedPackageJson.scripts[`compile-json:${dir}`]).toBe(
+        `tsp compile projects/${dir}/main.tsp --config "./projects/${dir}/tspconfig-json.yaml"`
+      );
+      expect(updatedPackageJson.scripts[`watch:${dir}`]).toBe(
+        `tsp compile projects/${dir}/main.tsp --watch --emit @typespec/openapi3`
+      );
+      expect(updatedPackageJson.scripts['build:all']).toContain(`compile:${dir}`);
+      expect(writeFileSync).toHaveBeenCalledWith(
+        packageJsonPath,
+        JSON.stringify(updatedPackageJson, null, 2)
+      );
     });
   });
 
