@@ -39,7 +39,7 @@ export const setDistFiles = (files: string[] = [], projectDir: string, version: 
   files.forEach(file => {
     // Read source content file
     const sourceDir = resolve(__dirname, '..', '..', 'doc', `api-${projectDir}`);
-    const contentFile = readFileSync(join(sourceDir, file));
+    const contentFile = readFileSync(join(sourceDir, file), 'utf-8');
 
     // Set new filename
     const newFilename = setFilenameVersion(file, version);
