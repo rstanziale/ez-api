@@ -1,71 +1,191 @@
-import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
-import { getVersion, setFilenameVersion } from '../src/postbuild';
-import { readJSONSync } from 'fs-extra';
-import { resolve } from 'path';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { getVersion, setFilenameVersion, getFilenames, setDistFiles } from '../src/postbuild';
+import { readFileSync, writeFileSync } from 'fs';
+import { join, resolve } from 'path';
+import { fs, vol } from 'memfs';
 
 describe('postbuild scripts', () => {
-  // Mock fs module
-  vi.mock('fs-extra', () => ({
-    readJSONSync: vi.fn(),
-  }));
+  // Tell vitest to use fs mock from __mocks__ folder
+  // This can be done in a setup file if fs should always be mocked
+  vi.mock('node:fs');
+  vi.mock('node:fs/promises');
+
+  beforeEach(() => {
+    // Reset the state of in-memory fs
+    vol.reset();
+  });
 
   describe.concurrent('getVersion', () => {
-    beforeEach(() => {
-      vi.clearAllMocks();
-    });
-
     it('should return version from config.json when present', () => {
       // Arrange
-      const mockConfig = { version: '1.2.3' };
+      vi.spyOn(fs, 'readFileSync');
       const dir = 'test-project';
-      const parameter = resolve(__dirname, '..', '..', 'projects', dir, 'config.json');
-      (readJSONSync as Mock).mockReturnValue(mockConfig);
+
+      // Create a mock directory with archetype files
+      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir, 'config.json');
+      vol.fromJSON(
+        {
+          [sourceDir]: `{"filename":"api-${dir}","version":"1.2.3"}`,
+        },
+        sourceDir
+      );
 
       // Act
       const result = getVersion(dir);
 
       // Assert
       expect(result).toBe('1.2.3');
-      expect(readJSONSync).toHaveBeenCalledWith(parameter);
+      expect(readFileSync).toHaveBeenCalledWith(sourceDir, 'utf-8');
     });
 
     it('should return default version when version is not in config', () => {
       // Arrange
-      const mockConfig = { someOtherField: 'value' };
+      vi.spyOn(fs, 'readFileSync');
       const dir = 'test-project';
-      const parameter = resolve(__dirname, '..', '..', 'projects', dir, 'config.json');
-      (readJSONSync as Mock).mockReturnValue(mockConfig);
+
+      // Create a mock directory with archetype files
+      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir, 'config.json');
+      vol.fromJSON(
+        {
+          [sourceDir]: `{"filename":"api-${dir}"}`,
+        },
+        sourceDir
+      );
 
       // Act
       const result = getVersion(dir);
 
       // Assert
       expect(result).toBe('0.0.0');
-      expect(readJSONSync).toHaveBeenCalledWith(parameter);
+      expect(readFileSync).toHaveBeenCalledWith(sourceDir, 'utf-8');
     });
 
     it('should return default version when config is empty', () => {
       // Arrange
+      vi.spyOn(fs, 'readFileSync');
       const dir = 'test-project';
-      const parameter = resolve(__dirname, '..', '..', 'projects', dir, 'config.json');
-      (readJSONSync as Mock).mockReturnValue({});
+
+      // Create a mock directory with archetype files
+      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir, 'config.json');
+      vol.fromJSON(
+        {
+          [sourceDir]: `{}`,
+        },
+        sourceDir
+      );
 
       // Act
       const result = getVersion(dir);
 
       // Assert
       expect(result).toBe('0.0.0');
-      expect(readJSONSync).toHaveBeenCalledWith(parameter);
+      expect(readFileSync).toHaveBeenCalledWith(sourceDir, 'utf-8');
     });
 
     it('should throw error when config file cannot be read', () => {
       // Arrange
-      (readJSONSync as Mock).mockImplementation(() => {
-        throw new Error('File not found');
-      });
+      vi.spyOn(fs, 'readFileSync');
+      const dir = 'invalid-project';
+      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir, 'config.json');
 
       // Act & Assert
-      expect(() => getVersion('invalid-project')).toThrow();
+      expect(() => getVersion(dir)).toThrow();
+      expect(readFileSync).toHaveBeenCalledWith(sourceDir, 'utf-8');
+    });
+  });
+
+  describe.concurrent('getFilenames', () => {
+    it('should return filenames with default "api" when filename is not in config', () => {
+      // Arrange
+      vi.spyOn(fs, 'readFileSync');
+      const dir = 'test-project';
+      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir, 'config.json');
+      vol.fromJSON(
+        {
+          [sourceDir]: `{"version":"1.2.3"}`,
+        },
+        sourceDir
+      );
+
+      // Act
+      const result = getFilenames(dir);
+
+      // Assert
+      expect(result).toEqual(['api-x.y.z.json', 'api-x.y.z.yaml']);
+      expect(readFileSync).toHaveBeenCalledWith(sourceDir, 'utf-8');
+    });
+
+    it('should return filenames with custom filename from config', () => {
+      // Arrange
+      vi.spyOn(fs, 'readFileSync');
+      const dir = 'test-project';
+      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir, 'config.json');
+      vol.fromJSON(
+        {
+          [sourceDir]: `{"filename":"custom-api","version":"1.2.3"}`,
+        },
+        sourceDir
+      );
+
+      // Act
+      const result = getFilenames(dir);
+
+      // Assert
+      expect(result).toEqual(['custom-api-x.y.z.json', 'custom-api-x.y.z.yaml']);
+      expect(readFileSync).toHaveBeenCalledWith(sourceDir, 'utf-8');
+    });
+
+    it('should throw error when config file cannot be read', () => {
+      // Arrange
+      vi.spyOn(fs, 'readFileSync');
+      const dir = 'invalid-project';
+      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir, 'config.json');
+
+      // Act & Assert
+      expect(() => getFilenames(dir)).toThrow();
+      expect(readFileSync).toHaveBeenCalledWith(sourceDir, 'utf-8');
+    });
+  });
+
+  describe.concurrent('setDistFiles', () => {
+    it('should create dist files with correct version in filenames', () => {
+      // Arrange
+      vi.spyOn(fs, 'readFileSync');
+      vi.spyOn(fs, 'writeFileSync');
+      const dir = 'test-project';
+      const version = '1.2.3';
+      const files = ['api-x.y.z.json', 'api-x.y.z.yaml'];
+      const sourceDir = resolve(__dirname, '..', '..', 'doc', `api-${dir}`);
+      const targetDir = resolve(__dirname, '..', '..', 'dist', `api-${dir}`);
+      vol.fromJSON(
+        {
+          [join(sourceDir, 'api-x.y.z.json')]: 'content-json',
+          [join(sourceDir, 'api-x.y.z.yaml')]: 'content-yaml',
+        },
+        sourceDir
+      );
+
+      // Act
+      setDistFiles(files, dir, version);
+
+      // Assert
+      expect(readFileSync).toHaveBeenCalledWith(join(sourceDir, 'api-x.y.z.json'), 'utf-8');
+      expect(readFileSync).toHaveBeenCalledWith(join(sourceDir, 'api-x.y.z.yaml'), 'utf-8');
+      expect(writeFileSync).toHaveBeenCalledWith(join(targetDir, 'api-1.2.3.json'), 'content-json');
+      expect(writeFileSync).toHaveBeenCalledWith(join(targetDir, 'api-1.2.3.yaml'), 'content-yaml');
+    });
+
+    it('should throw error when source file cannot be read', () => {
+      // Arrange
+      vi.spyOn(fs, 'readFileSync');
+      const dir = 'test-project';
+      const version = '1.2.3';
+      const files = ['invalid-file.json'];
+      const sourceDir = resolve(__dirname, '..', '..', 'doc', `api-${dir}`);
+
+      // Act & Assert
+      expect(() => setDistFiles(files, dir, version)).toThrow();
+      expect(readFileSync).toHaveBeenCalledWith(join(sourceDir, 'invalid-file.json'), 'utf-8');
     });
   });
 
