@@ -1,0 +1,375 @@
+openapi: 3.0.0
+info:
+  title: I18n Resources APIs
+  description: |-
+    **Development only**.
+
+    Analysis documentation for _i18n_ server-side resources.
+  version: 1.0.0-beta.1
+tags:
+  - name: Admin
+    description: List of Administrative API about i18n resources
+paths:
+  /i18n/admin/bundle:
+    get:
+      operationId: _AdminBundleRoute_getBundle
+      summary: Get bundle resource
+      description: |2-
+          Get default and custom bundle resources.
+
+          The service will return a list of two elements: **default** bundle resource and **custom** bundle resource (if any).
+      parameters:
+        - name: selector
+          in: query
+          required: true
+          schema:
+            type: string
+          explode: false
+        - name: langTag
+          in: query
+          required: true
+          schema:
+            type: string
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - state
+                properties:
+                  state:
+                    $ref: '#/components/schemas/ResponseState'
+                  result:
+                    type: array
+                    items:
+                      anyOf:
+                        - $ref: '#/components/schemas/I18nResourceCustom'
+                        - $ref: '#/components/schemas/I18nResource'
+      tags:
+        - Admin
+    post:
+      operationId: _AdminBundleRoute_createBundle
+      summary: Create bundle resource
+      description: |2-
+          Create a new custom bundle resource.
+
+          The service will force **default** attribute to false and set **createdAt** attribute on resource.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - state
+                properties:
+                  state:
+                    $ref: '#/components/schemas/ResponseState'
+                  result:
+                    $ref: '#/components/schemas/I18nResourceCustom'
+      tags:
+        - Admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/I18nResource'
+    delete:
+      operationId: _AdminBundleRoute_deleteBundle
+      summary: Delete bundle resource
+      description: |2-
+          Delete a custom bundle resource.
+
+          The service responds with number of deletions performed (typically "1" for a single resource deletion).
+      parameters:
+        - name: selector
+          in: query
+          required: true
+          schema:
+            type: string
+          explode: false
+        - name: langTag
+          in: query
+          required: true
+          schema:
+            type: string
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - state
+                properties:
+                  state:
+                    $ref: '#/components/schemas/ResponseState'
+                  result:
+                    type: number
+                    enum:
+                      - 0
+                      - 1
+              example:
+                state:
+                  code: 0
+                result: 0
+      tags:
+        - Admin
+    put:
+      operationId: _AdminBundleRoute_updateBundle
+      summary: Update bundle resource
+      description: |2-
+          Update a custom bundle resource.
+
+          This operation allows you to modify an existing custom bundle resource. The service will:
+          - Validate the updated resource content
+          - Replace the previous content
+          - Return the number of successful updates performed (typically "1" for a single resource update)
+          
+          **Note:** Only custom bundles can be updated. System bundles are read-only.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - state
+                properties:
+                  state:
+                    $ref: '#/components/schemas/ResponseState'
+                  result:
+                    type: number
+                    enum:
+                      - 0
+                      - 1
+              example:
+                state:
+                  code: 0
+                result: 1
+      tags:
+        - Admin
+  /i18n/bundle:
+    get:
+      operationId: I18nRoute_consumeBundle
+      summary: Consume bundle resource
+      description: |2-
+          Retrieve a bundle resource according **selector** and **langTag** taken as input.
+          
+          It's important to note that if a custom bundle is present, it will override the default entries.
+      parameters:
+        - name: selector
+          in: query
+          required: true
+          schema:
+            type: string
+          explode: false
+        - name: langTag
+          in: query
+          required: true
+          schema:
+            type: string
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - state
+                properties:
+                  state:
+                    $ref: '#/components/schemas/ResponseState'
+                  result:
+                    $ref: '#/components/schemas/I18nResponseOneOf'
+  /i18n/locales:
+    get:
+      operationId: I18nRoute_getLocales
+      summary: Get available locales
+      description: |2-
+          Retrieve all available locales supported by the i18n system.
+                
+          This endpoint returns an array of locale objects containing information about supported languages and regions.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - state
+                properties:
+                  state:
+                    $ref: '#/components/schemas/ResponseState'
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/I18nLocale'
+      x-badges:
+        color: blue
+        label: Keep locales always up-to-date
+  /i18n/selectors:
+    get:
+      operationId: I18nRoute_getSelectors
+      summary: Get unique resource selectors
+      description: |2-
+          Retrieve all unique selectors stored in the database. A selector is a unique identifier that represents a specific bundle of translations.
+          
+          This endpoint returns an array of selector strings that can be used to fetch specific translation bundles.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - state
+                properties:
+                  state:
+                    $ref: '#/components/schemas/ResponseState'
+                  result:
+                    type: array
+                    items:
+                      type: string
+              example:
+                state:
+                  code: 0
+                result:
+                  - myAwesomeApp
+                  - myAwesomeLib
+security:
+  - BasicAuth: []
+components:
+  schemas:
+    I18nLocale:
+      type: object
+      required:
+        - langTag
+        - language
+        - flag
+      properties:
+        langTag:
+          type: string
+          description: Language identifier according application locales
+        language:
+          type: string
+          description: Language description according langTag
+        flag:
+          type: string
+          description: Base64 representation of the flag image
+      example:
+        langTag: it-IT
+        language: Italiano
+        flag: data:image/png;base64,iVBOR...0D
+    I18nResource:
+      type: object
+      required:
+        - selector
+        - langTag
+        - bundle
+        - default
+      properties:
+        selector:
+          type: string
+          description: Resource bundle identifier
+        langTag:
+          type: string
+          description: Language identifier according application locales
+        bundle:
+          type: object
+          additionalProperties: {}
+          description: Json object with i18n entries
+        default:
+          type: boolean
+          description: True if resource is provided by application, false if it's created by customer
+      example:
+        selector: reportingApp
+        langTag: it-IT
+        bundle:
+          key1:
+            key2: Label per key 2
+          key3: Label per key 3
+        default: true
+    I18nResourceCustom:
+      type: object
+      required:
+        - default
+        - createdAt
+      properties:
+        default:
+          type: boolean
+          enum:
+            - false
+          description: It is always false for custom resource
+        createdAt:
+          type: string
+          description: It is a timestamp of creation server-side (YYYY-MM-DD[T]HH:mm:ss)
+        updatedAt:
+          type: string
+          description: It is a timestamp of last update server-side (YYYY-MM-DD[T]HH:mm:ss)
+      allOf:
+        - $ref: '#/components/schemas/I18nResource'
+      example:
+        selector: reportingApp
+        langTag: it-IT
+        bundle:
+          key1:
+            key2: Label custom per key 2
+          key3: Label per key 3
+        default: false
+        createdAt: '2024-12-03T10:45:00'
+        updatedAt: '2024-12-04T16:27:00'
+    I18nResponseOneOf:
+      oneOf:
+        - $ref: '#/components/schemas/I18nResource'
+        - $ref: '#/components/schemas/I18nResourceCustom'
+    ResponseState:
+      type: object
+      required:
+        - code
+      properties:
+        code:
+          type: number
+          enum:
+            - 0
+            - -1
+        description:
+          type: string
+      description: |-
+        Object state present in all the responses.
+        If state.code < 0 then description will fill with the error message.
+    Versions:
+      type: string
+      enum:
+        - 1.0.0-beta.1
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+servers:
+  - url: http://{baseUrl}{pathSpec}
+    description: AIS (HTTP)
+    variables:
+      baseUrl:
+        default: localhost:8080
+        description: Base URL
+      pathSpec:
+        default: /api
+        description: Path specializer (e.g. /api
