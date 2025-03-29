@@ -513,7 +513,7 @@
   "servers": [
     {
       "url": "http://{baseUrl}{pathSpec}",
-      "description": "AIS (HTTP)",
+      "description": "Backend URL (HTTP)",
       "variables": {
         "baseUrl": {
           "default": "localhost:8080",

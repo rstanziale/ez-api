@@ -18,7 +18,7 @@ using TypeSpec.Versioning;
 @tagMetadata("Admin", #{ description: "List of Administrative API about i18n resources" })
 @server(
   "http://{baseUrl}{pathSpec}",
-  "AIS (HTTP)",
+  "Backend URL (HTTP)",
   {
     @doc("Base URL")
     baseUrl: string = "localhost:8080",
