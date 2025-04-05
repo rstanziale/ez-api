@@ -362,7 +362,7 @@ components:
   securitySchemes:
     BasicAuth:
       type: http
-      scheme: basic
+      scheme: Basic
 servers:
   - url: http://{baseUrl}{pathSpec}
     description: Backend URL (HTTP)

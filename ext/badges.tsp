@@ -4,33 +4,25 @@
 alias BadgesExtKey = "x-badges";
 
 /**
+ * It accepts an object as a value
+ * For blue badge, it accepts an object with custom label
+ */
+alias BadgesExtValue<Color = "green" | "orange" | "red" | "blue", Label extends string = string> = {
+  color: Color;
+  label: Label;
+};
+
+/**
  * Create a green badge with "New" as label
  */
-alias BadgeNew = {
-  color: "green";
-  label: "New";
-};
+const BadgeNew: BadgesExtValue = #{ color: "green", label: "New" };
 
 /**
  * Create an orange badge with "Updated" as label
  */
-alias BadgeUpdated = {
-  color: "orange";
-  label: "Updated";
-};
+const BadgeUpdated: BadgesExtValue = #{ color: "orange", label: "Updated" };
 
 /**
  * Create a red badge with "Deprecated" as label
  */
-alias BadgeDeprecated = {
-  color: "red";
-  label: "Deprecated";
-};
-
-/**
- * Create a blue badge with a custom text as label
- */
-alias BadgeComment<T extends string> = {
-  color: "blue";
-  label: T;
-};
+const BadgeDeprecated: BadgesExtValue = #{ color: "red", label: "Deprecated" };

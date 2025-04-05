@@ -51,7 +51,7 @@ namespace I18nRoute {
   };
 
   @route("/locales")
-  @extension(BadgesExtKey, BadgeComment<"Keep locales always up-to-date">)
+  @extension(BadgesExtKey, #{ color: "blue", label: "Keep locales always up-to-date" })
   @summary("Get available locales")
   @doc("""
       Retrieve all available locales supported by the i18n system.
