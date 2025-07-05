@@ -1,4 +1,5 @@
 import "@typespec/http";
+import "../../consts/example.const.tsp";
 import "../../model/base-response.model.tsp";
 import "../../model/i18n-resource.model.tsp";
 
@@ -13,6 +14,7 @@ interface AdminBundleRoute {
       The service will return a list of two elements: **default** bundle resource and **custom** bundle resource (if any).
     """)
   @get
+  @opExample(#{ parameters: #{ selector: EXAMPLE_SELECTOR, langTag: EXAMPLE_LANG_TAG } })
   getBundle(@query selector: string, @query langTag: string): {
     @statusCode _: 200;
     @body result: BaseResponse<(I18nResourceCustom | I18nResource)[]>;
@@ -26,8 +28,14 @@ interface AdminBundleRoute {
       The service will force **default** attribute to false and set **createdAt** attribute on resource.
     """)
   @post
+  @opExample(#{
+    returnType: #{
+      statusCode: 200,
+      result: #{ state: #{ code: 0 }, result: i18nResourceCustomExample },
+    },
+  })
   createBundle(@body resource: I18nResource): {
-    @statusCode _: 200;
+    @statusCode statusCode: 200;
     @body result: BaseResponse<I18nResourceCustom>;
   };
 
@@ -39,7 +47,10 @@ interface AdminBundleRoute {
       The service responds with number of deletions performed (typically "1" for a single resource deletion).
     """)
   @delete
-  @opExample(#{ returnType: #{ statusCode: 200, result: #{ state: #{ code: 0 }, result: 0 } } })
+  @opExample(#{
+    parameters: #{ selector: EXAMPLE_SELECTOR, langTag: EXAMPLE_LANG_TAG },
+    returnType: #{ statusCode: 200, result: #{ state: #{ code: 0 }, result: 0 } },
+  })
   deleteBundle(@query selector: string, @query langTag: string): {
     @statusCode statusCode: 200;
     @body result: BaseResponse<0 | 1>;

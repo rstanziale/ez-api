@@ -25,7 +25,8 @@
             "schema": {
               "type": "string"
             },
-            "explode": false
+            "explode": false,
+            "example": "myAwesomeApp"
           },
           {
             "name": "langTag",
@@ -34,7 +35,8 @@
             "schema": {
               "type": "string"
             },
-            "explode": false
+            "explode": false,
+            "example": "en-GB"
           }
         ],
         "responses": {
@@ -97,6 +99,24 @@
                       "$ref": "#/components/schemas/I18nResourceCustom"
                     }
                   }
+                },
+                "example": {
+                  "state": {
+                    "code": 0
+                  },
+                  "result": {
+                    "selector": "reportingApp",
+                    "langTag": "it-IT",
+                    "bundle": {
+                      "key1": {
+                        "key2": "Label custom per key 2"
+                      },
+                      "key3": "Label per key 3"
+                    },
+                    "default": false,
+                    "createdAt": "2024-12-03T10:45:00",
+                    "updatedAt": "2024-12-04T16:27:00"
+                  }
                 }
               }
             }
@@ -128,7 +148,8 @@
             "schema": {
               "type": "string"
             },
-            "explode": false
+            "explode": false,
+            "example": "myAwesomeApp"
           },
           {
             "name": "langTag",
@@ -137,7 +158,8 @@
             "schema": {
               "type": "string"
             },
-            "explode": false
+            "explode": false,
+            "example": "en-GB"
           }
         ],
         "responses": {
@@ -233,7 +255,8 @@
             "schema": {
               "type": "string"
             },
-            "explode": false
+            "explode": false,
+            "example": "myAwesomeApp"
           },
           {
             "name": "langTag",
@@ -242,7 +265,8 @@
             "schema": {
               "type": "string"
             },
-            "explode": false
+            "explode": false,
+            "example": "en-GB"
           }
         ],
         "responses": {
@@ -297,6 +321,18 @@
                       }
                     }
                   }
+                },
+                "example": {
+                  "state": {
+                    "code": 0
+                  },
+                  "result": [
+                    {
+                      "langTag": "it-IT",
+                      "language": "Italiano",
+                      "flag": "data:image/png;base64,iVBOR...0D"
+                    }
+                  ]
                 }
               }
             }

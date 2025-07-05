@@ -5,3 +5,4 @@ options:
     file-type: yaml
     output-file: api-i18n-resources-x.y.z.yaml
     emitter-output-dir: "{project-root}/../../doc/api-i18n-resources"
+    experimental-parameter-examples: data

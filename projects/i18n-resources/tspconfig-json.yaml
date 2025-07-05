@@ -5,3 +5,4 @@ options:
     file-type: json
     output-file: api-i18n-resources-x.y.z.json
     emitter-output-dir: "{project-root}/../../doc/api-i18n-resources"
+    experimental-parameter-examples: data

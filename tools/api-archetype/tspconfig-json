@@ -5,3 +5,4 @@ options:
     file-type: json
     output-file: api-#{PROJECT_NAME}-x.y.z.json
     emitter-output-dir: "{project-root}/../../doc/api-#{PROJECT_NAME}"
+    experimental-parameter-examples: data
