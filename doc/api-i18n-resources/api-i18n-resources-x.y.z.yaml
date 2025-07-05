@@ -25,12 +25,14 @@ paths:
           schema:
             type: string
           explode: false
+          example: myAwesomeApp
         - name: langTag
           in: query
           required: true
           schema:
             type: string
           explode: false
+          example: en-GB
       responses:
         '200':
           description: The request has succeeded.
@@ -73,6 +75,19 @@ paths:
                     $ref: '#/components/schemas/ResponseState'
                   result:
                     $ref: '#/components/schemas/I18nResourceCustom'
+              example:
+                state:
+                  code: 0
+                result:
+                  selector: reportingApp
+                  langTag: it-IT
+                  bundle:
+                    key1:
+                      key2: Label custom per key 2
+                    key3: Label per key 3
+                  default: false
+                  createdAt: '2024-12-03T10:45:00'
+                  updatedAt: '2024-12-04T16:27:00'
       tags:
         - Admin
       requestBody:
@@ -95,12 +110,14 @@ paths:
           schema:
             type: string
           explode: false
+          example: myAwesomeApp
         - name: langTag
           in: query
           required: true
           schema:
             type: string
           explode: false
+          example: en-GB
       responses:
         '200':
           description: The request has succeeded.
@@ -175,12 +192,14 @@ paths:
           schema:
             type: string
           explode: false
+          example: myAwesomeApp
         - name: langTag
           in: query
           required: true
           schema:
             type: string
           explode: false
+          example: en-GB
       responses:
         '200':
           description: The request has succeeded.
@@ -220,6 +239,13 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/I18nLocale'
+              example:
+                state:
+                  code: 0
+                result:
+                  - langTag: it-IT
+                    language: Italiano
+                    flag: data:image/png;base64,iVBOR...0D
       x-badges:
         color: blue
         label: Keep locales always up-to-date

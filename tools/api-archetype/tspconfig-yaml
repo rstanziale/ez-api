@@ -5,3 +5,4 @@ options:
     file-type: yaml
     output-file: api-#{PROJECT_NAME}-x.y.z.yaml
     emitter-output-dir: "{project-root}/../../doc/api-#{PROJECT_NAME}"
+    experimental-parameter-examples: data

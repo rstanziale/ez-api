@@ -1,5 +1,6 @@
 import "@typespec/http";
 import "@typespec/openapi";
+import "../consts/example.const.tsp";
 import "../model/i18n-resource.model.tsp";
 import "../model/i18n-locale.model.tsp";
 import "./bundle/admin-bundle.route.tsp";
@@ -26,6 +27,7 @@ namespace I18nRoute {
       It's important to note that if a custom bundle is present, it will override the default entries.
     """)
   @get
+  @opExample(#{ parameters: #{ selector: EXAMPLE_SELECTOR, langTag: EXAMPLE_LANG_TAG } })
   op consumeBundle(@query selector: string, @query langTag: string): {
     @statusCode _: 200;
     @body result: BaseResponse<I18nResponseOneOf>;
@@ -59,8 +61,14 @@ namespace I18nRoute {
       This endpoint returns an array of locale objects containing information about supported languages and regions.
     """)
   @get
+  @opExample(#{
+    returnType: #{
+      statusCode: 200,
+      result: #{ state: #{ code: 0 }, result: #[i18nLocaleExample] },
+    },
+  })
   op getLocales(): {
-    @statusCode _: 200;
+    @statusCode statusCode: 200;
     @body result: BaseResponse<I18nLocale[]>;
   };
 }
