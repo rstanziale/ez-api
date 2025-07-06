@@ -17,7 +17,7 @@ model I18nLocale {
 }
 
 const i18nLocaleExample: I18nLocale = #{
-  langTag: "it-IT",
-  language: "Italiano",
+  langTag: EXAMPLE_LANG_TAG,
+  language: EXAMPLE_LANG_DESC,
   flag: "data:image/png;base64,iVBOR...0D",
 };

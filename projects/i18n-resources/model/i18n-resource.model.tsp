@@ -26,9 +26,9 @@ model I18nResource {
 }
 
 const i18nResourceExample: I18nResource = #{
-  selector: "reportingApp",
-  langTag: "it-IT",
-  bundle: #{ key1: #{ key2: "Label per key 2" }, key3: "Label per key 3" },
+  selector: EXAMPLE_SELECTOR,
+  langTag: EXAMPLE_LANG_TAG,
+  bundle: #{ key1: #{ key2: "Label for key 2" }, key3: "Label for key 3" },
   default: true,
 };
 
@@ -51,9 +51,9 @@ model I18nResourceCustom extends I18nResource {
 }
 
 const i18nResourceCustomExample: I18nResourceCustom = #{
-  selector: "reportingApp",
-  langTag: "it-IT",
-  bundle: #{ key1: #{ key2: "Label custom per key 2" }, key3: "Label per key 3" },
+  selector: EXAMPLE_SELECTOR,
+  langTag: EXAMPLE_LANG_TAG,
+  bundle: #{ key1: #{ key2: "Label custom for key 2" }, key3: "Label for key 3" },
   default: false,
   createdAt: "2024-12-03T10:45:00",
   updatedAt: "2024-12-04T16:27:00",
