@@ -1,17 +1,24 @@
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { fs, vol } from 'memfs';
+import { join, resolve } from 'path';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import {
   createConfigFile,
+  createMainFile,
   createProjectDir,
+  createTspFiles,
   existProjectDir,
   toCamelCase,
   toSentence,
   updatePackageJson,
-  createTspFiles,
-  createMainFile,
 } from '../src/api-new';
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { join, resolve } from 'path';
-import { fs, vol } from 'memfs';
+import {
+  ARCHETYPE_CONFIG_FILE,
+  ARCHETYPE_DIR,
+  ARCHETYPE_TSP_CONFIG_JSON,
+  ARCHETYPE_TSP_CONFIG_YAML,
+  PROJECTS_DIR,
+} from '../src/const/api-const';
 
 describe.concurrent('api:new scripts', () => {
   // Tell vitest to use fs mock from __mocks__ folder
@@ -24,16 +31,16 @@ describe.concurrent('api:new scripts', () => {
     vol.reset();
 
     // Create a mock directory with archetype files
-    const sourceDir = resolve(__dirname, '..', 'api-archetype');
+    const sourceDir = resolve(__dirname, '..', ARCHETYPE_DIR);
     vol.fromJSON(
       {
-        [join(sourceDir, 'config.json')]:
+        [join(sourceDir, ARCHETYPE_CONFIG_FILE)]:
           '{"filename":"api-#{PROJECT_NAME}","version":"1.0.0-beta.1"}',
         [join(sourceDir, 'main')]:
           'import "@typespec/http"; import "@typespec/openapi"; import "@typespec/versioning"; using TypeSpec.Http; using TypeSpec.OpenAPI; using TypeSpec.Versioning; @service({ title: "#{PROJECT_NAME} APIs", }) @versioned(Versions) namespace #{PROJECT_NAMESPACE}Namespace; enum Versions { `1.0.0-beta.1`, }',
-        [join(sourceDir, 'tspconfig-json')]:
+        [join(sourceDir, ARCHETYPE_TSP_CONFIG_JSON)]:
           'emit: - "@typespec/openapi3" options: "@typespec/openapi3": file-type: json output-file: api-#{PROJECT_NAME}-x.y.z.json emitter-output-dir: "{project-root}/../../doc/api-#{PROJECT_NAME}"',
-        [join(sourceDir, 'tspconfig-yaml')]:
+        [join(sourceDir, ARCHETYPE_TSP_CONFIG_YAML)]:
           'emit: - "@typespec/openapi3" options: "@typespec/openapi3": file-type: yaml output-file: api-#{PROJECT_NAME}-x.y.z.yaml emitter-output-dir: "{project-root}/../../doc/api-#{PROJECT_NAME}"',
       },
       sourceDir
@@ -45,7 +52,7 @@ describe.concurrent('api:new scripts', () => {
       // Arrange
       vi.spyOn(fs, 'existsSync');
       const dir = 'test-project';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
       fs.mkdirSync(sourceDir, { recursive: true });
 
       // Act
@@ -60,7 +67,7 @@ describe.concurrent('api:new scripts', () => {
       // Arrange
       vi.spyOn(fs, 'existsSync');
       const dir = 'non-existent';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
 
       // Act
       const result = existProjectDir(dir);
@@ -74,7 +81,7 @@ describe.concurrent('api:new scripts', () => {
       // Arrange
       vi.spyOn(fs, 'existsSync');
       const dir = 'test@project#123';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
       fs.mkdirSync(sourceDir, { recursive: true });
 
       // Act
@@ -91,7 +98,7 @@ describe.concurrent('api:new scripts', () => {
       // Arrange
       vi.spyOn(fs, 'mkdirSync');
       const dir = 'new-project';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
 
       // Act
       createProjectDir(dir);
@@ -105,7 +112,7 @@ describe.concurrent('api:new scripts', () => {
       // Arrange
       vi.spyOn(fs, 'mkdirSync');
       const dir = 'nested/project/dir';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
 
       // Act
       createProjectDir(dir);
@@ -119,7 +126,7 @@ describe.concurrent('api:new scripts', () => {
       // Arrange
       vi.spyOn(fs, 'mkdirSync');
       const dir = 'existing-project';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
       fs.mkdirSync(sourceDir, { recursive: true });
 
       // Act & Assert
@@ -131,7 +138,7 @@ describe.concurrent('api:new scripts', () => {
       // Arrange
       vi.spyOn(fs, 'mkdirSync');
       const dir = 'special@project#123';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
 
       // Act
       createProjectDir(dir);
@@ -145,7 +152,7 @@ describe.concurrent('api:new scripts', () => {
       // Arrange
       vi.spyOn(fs, 'mkdirSync');
       const dir = '';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
 
       // Act
       createProjectDir(dir);
@@ -161,14 +168,14 @@ describe.concurrent('api:new scripts', () => {
       // Arrange
       vi.spyOn(fs, 'writeFileSync');
       const dir = 'config-project';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
       fs.mkdirSync(sourceDir, { recursive: true });
 
       // Act
       createConfigFile(dir);
 
       // Assert
-      const configFilePath = resolve(sourceDir, 'config.json');
+      const configFilePath = resolve(sourceDir, ARCHETYPE_CONFIG_FILE);
       expect(existsSync(configFilePath)).toBe(true);
       const configFile = fs.readFileSync(configFilePath, 'utf-8') as string;
       const configFileContent = JSON.parse(configFile);
@@ -180,14 +187,14 @@ describe.concurrent('api:new scripts', () => {
       // Arrange
       vi.spyOn(fs, 'writeFileSync');
       const dir = 'special@config#123';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
       fs.mkdirSync(sourceDir, { recursive: true });
 
       // Act
       createConfigFile(dir);
 
       // Assert
-      const configFilePath = resolve(sourceDir, 'config.json');
+      const configFilePath = resolve(sourceDir, ARCHETYPE_CONFIG_FILE);
       expect(existsSync(configFilePath)).toBe(true);
       const configFile = fs.readFileSync(configFilePath, 'utf-8') as string;
       const configFileContent = JSON.parse(configFile);
@@ -199,14 +206,14 @@ describe.concurrent('api:new scripts', () => {
       // Arrange
       vi.spyOn(fs, 'writeFileSync');
       const dir = '';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
       fs.mkdirSync(sourceDir, { recursive: true });
 
       // Act
       createConfigFile(dir);
 
       // Assert
-      const configFilePath = resolve(sourceDir, 'config.json');
+      const configFilePath = resolve(sourceDir, ARCHETYPE_CONFIG_FILE);
       expect(existsSync(configFilePath)).toBe(true);
       const configFile = fs.readFileSync(configFilePath, 'utf-8') as string;
       const configFileContent = JSON.parse(configFile);
@@ -220,7 +227,7 @@ describe.concurrent('api:new scripts', () => {
       // Arrange
       vi.spyOn(fs, 'writeFileSync');
       const dir = 'tsp-project';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
       fs.mkdirSync(sourceDir, { recursive: true });
 
       // Act
@@ -240,7 +247,7 @@ describe.concurrent('api:new scripts', () => {
       // Arrange
       vi.spyOn(fs, 'writeFileSync');
       const dir = 'special@tsp#123';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
       fs.mkdirSync(sourceDir, { recursive: true });
 
       // Act
@@ -260,7 +267,7 @@ describe.concurrent('api:new scripts', () => {
       // Arrange
       vi.spyOn(fs, 'writeFileSync');
       const dir = '';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
       fs.mkdirSync(sourceDir, { recursive: true });
 
       // Act
@@ -282,7 +289,7 @@ describe.concurrent('api:new scripts', () => {
       // Arrange
       vi.spyOn(fs, 'writeFileSync');
       const dir = 'main-project';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
       fs.mkdirSync(sourceDir, { recursive: true });
 
       // Act
@@ -301,7 +308,7 @@ describe.concurrent('api:new scripts', () => {
       // Arrange
       vi.spyOn(fs, 'writeFileSync');
       const dir = 'special@main#123';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
       fs.mkdirSync(sourceDir, { recursive: true });
 
       // Act
@@ -319,7 +326,7 @@ describe.concurrent('api:new scripts', () => {
     it('should handle empty string input', () => {
       // Arrange
       const dir = '';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
       fs.mkdirSync(sourceDir, { recursive: true });
 
       // Act & Assert
@@ -332,7 +339,7 @@ describe.concurrent('api:new scripts', () => {
       // Arrange
       vi.spyOn(fs, 'writeFileSync');
       const dir = 'new-project';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
       fs.mkdirSync(sourceDir, { recursive: true });
 
       const packageJsonPath = resolve(__dirname, '..', '..', 'package.json');
@@ -374,7 +381,7 @@ describe.concurrent('api:new scripts', () => {
       // Arrange
       vi.spyOn(fs, 'writeFileSync');
       const dir = 'special@project#123';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
       fs.mkdirSync(sourceDir, { recursive: true });
 
       const packageJsonPath = resolve(__dirname, '..', '..', 'package.json');
@@ -415,7 +422,7 @@ describe.concurrent('api:new scripts', () => {
     it('should handle empty string input', () => {
       // Arrange
       const dir = '';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir);
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
       fs.mkdirSync(sourceDir, { recursive: true });
 
       const packageJsonPath = resolve(__dirname, '..', '..', 'package.json');

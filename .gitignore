@@ -4,6 +4,7 @@
 # Default TypeSpec output
 tsp-output/
 dist/
+tmp/
 
 # IDEs and editors
 .idea/

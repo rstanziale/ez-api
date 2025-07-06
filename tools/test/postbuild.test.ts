@@ -1,8 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { getVersion, setFilenameVersion, getFilenames, setDistFiles } from '../src/postbuild';
 import { readFileSync, writeFileSync } from 'fs';
-import { join, resolve } from 'path';
 import { fs, vol } from 'memfs';
+import { join, resolve } from 'path';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ARCHETYPE_CONFIG_FILE, PROJECTS_DIR } from '../src/const/api-const';
+import { getFilenames, getVersion, setDistFiles, setFilenameVersion } from '../src/postbuild';
 
 describe('postbuild scripts', () => {
   // Tell vitest to use fs mock from __mocks__ folder
@@ -22,7 +23,7 @@ describe('postbuild scripts', () => {
       const dir = 'test-project';
 
       // Create a mock directory with archetype files
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir, 'config.json');
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir, ARCHETYPE_CONFIG_FILE);
       vol.fromJSON(
         {
           [sourceDir]: `{"filename":"api-${dir}","version":"1.2.3"}`,
@@ -44,7 +45,7 @@ describe('postbuild scripts', () => {
       const dir = 'test-project';
 
       // Create a mock directory with archetype files
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir, 'config.json');
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir, ARCHETYPE_CONFIG_FILE);
       vol.fromJSON(
         {
           [sourceDir]: `{"filename":"api-${dir}"}`,
@@ -66,7 +67,7 @@ describe('postbuild scripts', () => {
       const dir = 'test-project';
 
       // Create a mock directory with archetype files
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir, 'config.json');
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir, ARCHETYPE_CONFIG_FILE);
       vol.fromJSON(
         {
           [sourceDir]: `{}`,
@@ -86,7 +87,7 @@ describe('postbuild scripts', () => {
       // Arrange
       vi.spyOn(fs, 'readFileSync');
       const dir = 'invalid-project';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir, 'config.json');
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir, ARCHETYPE_CONFIG_FILE);
 
       // Act & Assert
       expect(() => getVersion(dir)).toThrow();
@@ -99,7 +100,7 @@ describe('postbuild scripts', () => {
       // Arrange
       vi.spyOn(fs, 'readFileSync');
       const dir = 'test-project';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir, 'config.json');
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir, ARCHETYPE_CONFIG_FILE);
       vol.fromJSON(
         {
           [sourceDir]: `{"version":"1.2.3"}`,
@@ -119,7 +120,7 @@ describe('postbuild scripts', () => {
       // Arrange
       vi.spyOn(fs, 'readFileSync');
       const dir = 'test-project';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir, 'config.json');
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir, ARCHETYPE_CONFIG_FILE);
       vol.fromJSON(
         {
           [sourceDir]: `{"filename":"custom-api","version":"1.2.3"}`,
@@ -139,7 +140,7 @@ describe('postbuild scripts', () => {
       // Arrange
       vi.spyOn(fs, 'readFileSync');
       const dir = 'invalid-project';
-      const sourceDir = resolve(__dirname, '..', '..', 'projects', dir, 'config.json');
+      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir, ARCHETYPE_CONFIG_FILE);
 
       // Act & Assert
       expect(() => getFilenames(dir)).toThrow();

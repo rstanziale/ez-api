@@ -1,8 +1,14 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join, resolve } from 'path';
-
-const PROJECT_NAME = /\#{PROJECT_NAME}/g;
-const PROJECT_NAMESPACE = /\#{PROJECT_NAMESPACE}/g;
+import {
+  ARCHETYPE_CONFIG_FILE,
+  ARCHETYPE_DIR,
+  ARCHETYPE_TSP_CONFIG_JSON,
+  ARCHETYPE_TSP_CONFIG_YAML,
+  PROJECT_NAME,
+  PROJECT_NAMESPACE,
+  PROJECTS_DIR,
+} from './const/api-const';
 
 /**
  * Check if project directory exists
@@ -10,7 +16,7 @@ const PROJECT_NAMESPACE = /\#{PROJECT_NAMESPACE}/g;
  * @returns true if project directory exists, false otherwise
  */
 export const existProjectDir = (projectDir: string): boolean => {
-  const targetDir = resolve(__dirname, '..', '..', 'projects', projectDir);
+  const targetDir = resolve(__dirname, '..', '..', PROJECTS_DIR, projectDir);
   return existsSync(targetDir);
 };
 
@@ -19,7 +25,7 @@ export const existProjectDir = (projectDir: string): boolean => {
  * @param projectDir target project directory
  */
 export const createProjectDir = (projectDir: string): void => {
-  const targetDir = resolve(__dirname, '..', '..', 'projects', projectDir);
+  const targetDir = resolve(__dirname, '..', '..', PROJECTS_DIR, projectDir);
   mkdirSync(targetDir, { recursive: true });
 };
 
@@ -29,16 +35,16 @@ export const createProjectDir = (projectDir: string): void => {
  */
 export const createConfigFile = (projectDir: string): void => {
   // Read from archetype dir config.json file
-  const sourceDir = resolve(__dirname, '..', 'api-archetype');
-  const configJsonFile = readFileSync(join(sourceDir, 'config.json'), 'utf-8');
+  const sourceDir = resolve(__dirname, '..', ARCHETYPE_DIR);
+  const configJsonFile = readFileSync(join(sourceDir, ARCHETYPE_CONFIG_FILE), 'utf-8');
   const configJson = JSON.parse(configJsonFile);
 
   // Override placeholder
   configJson['filename'] = configJson['filename'].replace(PROJECT_NAME, projectDir);
 
   // Write file on project dir
-  const targetDir = resolve(__dirname, '..', '..', 'projects', projectDir);
-  writeFileSync(join(targetDir, 'config.json'), JSON.stringify(configJson, null, 2));
+  const targetDir = resolve(__dirname, '..', '..', PROJECTS_DIR, projectDir);
+  writeFileSync(join(targetDir, ARCHETYPE_CONFIG_FILE), JSON.stringify(configJson, null, 2));
 };
 
 /**
@@ -46,9 +52,9 @@ export const createConfigFile = (projectDir: string): void => {
  * @param projectDir target project directory
  */
 export const createTspFiles = (projectDir: string): void => {
-  const sourceDir = resolve(__dirname, '..', 'api-archetype');
+  const sourceDir = resolve(__dirname, '..', ARCHETYPE_DIR);
 
-  ['tspconfig-json', 'tspconfig-yaml'].forEach((filename: string) => {
+  [ARCHETYPE_TSP_CONFIG_JSON, ARCHETYPE_TSP_CONFIG_YAML].forEach((filename: string) => {
     // Read from archetype dir config.json file
     let file = readFileSync(join(sourceDir, filename), 'utf-8');
 
@@ -56,7 +62,7 @@ export const createTspFiles = (projectDir: string): void => {
     file = file.replace(PROJECT_NAME, projectDir);
 
     // Write file on project dir
-    const targetDir = resolve(__dirname, '..', '..', 'projects', projectDir);
+    const targetDir = resolve(__dirname, '..', '..', PROJECTS_DIR, projectDir);
     writeFileSync(join(targetDir, `${filename}.yaml`), file);
   });
 };
@@ -67,7 +73,7 @@ export const createTspFiles = (projectDir: string): void => {
  */
 export const createMainFile = (projectDir: string): void => {
   // Read from archetype dir config.json file
-  const sourceDir = resolve(__dirname, '..', 'api-archetype');
+  const sourceDir = resolve(__dirname, '..', ARCHETYPE_DIR);
   let main = readFileSync(join(sourceDir, 'main'), 'utf-8');
 
   // Override placeholder
@@ -76,7 +82,7 @@ export const createMainFile = (projectDir: string): void => {
     .replace(PROJECT_NAMESPACE, toCamelCase(projectDir));
 
   // Write file on project dir
-  const targetDir = resolve(__dirname, '..', '..', 'projects', projectDir);
+  const targetDir = resolve(__dirname, '..', '..', PROJECTS_DIR, projectDir);
   writeFileSync(join(targetDir, 'main.tsp'), main);
 };
 
