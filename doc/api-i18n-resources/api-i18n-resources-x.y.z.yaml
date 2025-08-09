@@ -79,12 +79,12 @@ paths:
                 state:
                   code: 0
                 result:
-                  selector: reportingApp
-                  langTag: it-IT
+                  selector: myAwesomeApp
+                  langTag: en-GB
                   bundle:
                     key1:
-                      key2: Label custom per key 2
-                    key3: Label per key 3
+                      key2: Label custom for key 2
+                    key3: Label for key 3
                   default: false
                   createdAt: '2024-12-03T10:45:00'
                   updatedAt: '2024-12-04T16:27:00'
@@ -243,8 +243,8 @@ paths:
                 state:
                   code: 0
                 result:
-                  - langTag: it-IT
-                    language: Italiano
+                  - langTag: en-GB
+                    language: English (United Kingdom)
                     flag: data:image/png;base64,iVBOR...0D
       x-badges:
         color: blue
@@ -279,7 +279,6 @@ paths:
                   code: 0
                 result:
                   - myAwesomeApp
-                  - myAwesomeLib
 security:
   - BasicAuth: []
 components:
@@ -301,8 +300,8 @@ components:
           type: string
           description: Base64 representation of the flag image
       example:
-        langTag: it-IT
-        language: Italiano
+        langTag: en-GB
+        language: English (United Kingdom)
         flag: data:image/png;base64,iVBOR...0D
     I18nResource:
       type: object
@@ -326,12 +325,12 @@ components:
           type: boolean
           description: True if resource is provided by application, false if it's created by customer
       example:
-        selector: reportingApp
-        langTag: it-IT
+        selector: myAwesomeApp
+        langTag: en-GB
         bundle:
           key1:
-            key2: Label per key 2
-          key3: Label per key 3
+            key2: Label for key 2
+          key3: Label for key 3
         default: true
     I18nResourceCustom:
       type: object
@@ -353,12 +352,12 @@ components:
       allOf:
         - $ref: '#/components/schemas/I18nResource'
       example:
-        selector: reportingApp
-        langTag: it-IT
+        selector: myAwesomeApp
+        langTag: en-GB
         bundle:
           key1:
-            key2: Label custom per key 2
-          key3: Label per key 3
+            key2: Label custom for key 2
+          key3: Label for key 3
         default: false
         createdAt: '2024-12-03T10:45:00'
         updatedAt: '2024-12-04T16:27:00'

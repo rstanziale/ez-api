@@ -10,6 +10,7 @@ ez-api leverages Microsoft's TypeSpec to define and maintain consistent APIs acr
 
 - **TypeSpec Integration**: First-class support for Microsoft's TypeSpec specification language
 - **Project Generation**: Quick scaffolding with predefined archetypes
+- **Import OpenAPI Specs**: Import existing OpenAPI specifications into TypeSpec projects
 - **OpenAPI Compliance**: Automatic generation of OpenAPI 3.0 specifications
 - **Developer Tools**: Enhanced DX with built-in utilities
 
@@ -37,6 +38,12 @@ npm install
 npm run api:new my-awesome-api
 ```
 
+or import an existing OpenAPI specification:
+
+```bash
+npm run api:import my-awesome-api path/to/openapi.yaml
+```
+
 2. Customize project settings in `config.json`:
 
 ```json
@@ -54,6 +61,7 @@ npm run compile:my-awesome-api
 
 ### Project Commands
 
+- `api-import` to import existing OpenAPI specifications into a new TypeSpec project
 - `api-new` to creates a new API project using predefined archetypes
 - `postbuild` to generates OpenAPI specification files in both YAML and JSON formats
 
@@ -80,6 +88,7 @@ ez-api/
 │       ├── tspconfig-json.yaml     # TypeSpec configuration for JSON
 │       └── tspconfig-yaml.yaml     # TypeSpec configuration for YAML
 ├── tools/
+│   ├── api-import.ts               # Custom project generator for importing OpenAPI specs
 │   ├── api-new.ts                  # Custom project generator according archetype
 │   └── postbuild.ts                # Custom build script
 └── package.json
