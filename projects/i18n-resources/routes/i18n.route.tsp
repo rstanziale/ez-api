@@ -42,10 +42,7 @@ namespace I18nRoute {
     """)
   @get
   @opExample(#{
-    returnType: #{
-      statusCode: 200,
-      result: #{ state: #{ code: 0 }, result: #["myAwesomeApp", "myAwesomeLib"] },
-    },
+    returnType: #{ statusCode: 200, result: #{ state: #{ code: 0 }, result: #[EXAMPLE_SELECTOR] } },
   })
   op getSelectors(): {
     @statusCode statusCode: 200;

@@ -16,6 +16,7 @@
     "format": "tsp format \"**/*.tsp\"",
     "test": "vitest",
     "api:new": "ts-node --project tools/tsconfig.json tools/api-new.ts",
+    "api:import": "ts-node --project tools/tsconfig.json tools/api-import.ts",
     "build:all": "npm-run-all --parallel compile:i18n-resources",
     "compile:i18n-resources": "npm-run-all --parallel compile-yaml:i18n-resources compile-json:i18n-resources",
     "postcompile:i18n-resources": "ts-node --project tools/tsconfig.json tools/postbuild.ts i18n-resources",

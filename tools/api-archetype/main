@@ -6,9 +6,7 @@ using TypeSpec.Http;
 using TypeSpec.OpenAPI;
 using TypeSpec.Versioning;
 
-@service({
-  title: "#{PROJECT_NAME} APIs",
-})
+@service(#{ title: "#{PROJECT_NAME} APIs" })
 @versioned(Versions)
 namespace #{PROJECT_NAMESPACE}Namespace;
 

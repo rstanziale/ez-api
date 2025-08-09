@@ -1,5 +1,6 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join, resolve } from 'path';
+import { ARCHETYPE_CONFIG_FILE, PROJECTS_DIR } from './const/api-const';
 
 /**
  * Get config.json version attribute
@@ -8,8 +9,8 @@ import { join, resolve } from 'path';
  * @returns string value
  */
 export const getVersion = (projectDir: string): string => {
-  const configDir = resolve(__dirname, '..', '..', 'projects', projectDir);
-  const configJsonFile = readFileSync(join(configDir, 'config.json'), 'utf-8');
+  const configDir = resolve(__dirname, '..', '..', PROJECTS_DIR, projectDir);
+  const configJsonFile = readFileSync(join(configDir, ARCHETYPE_CONFIG_FILE), 'utf-8');
   const configJson = JSON.parse(configJsonFile);
 
   return configJson['version'] ?? '0.0.0';
@@ -21,8 +22,8 @@ export const getVersion = (projectDir: string): string => {
  * @returns list of string
  */
 export const getFilenames = (projectDir: string): string[] => {
-  const configDir = resolve(__dirname, '..', '..', 'projects', projectDir);
-  const configJsonFile = readFileSync(join(configDir, 'config.json'), 'utf-8');
+  const configDir = resolve(__dirname, '..', '..', PROJECTS_DIR, projectDir);
+  const configJsonFile = readFileSync(join(configDir, ARCHETYPE_CONFIG_FILE), 'utf-8');
   const configJson = JSON.parse(configJsonFile);
   const filename = configJson['filename'] ?? 'api';
 
