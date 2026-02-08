@@ -359,7 +359,7 @@ describe.concurrent('api:new scripts', () => {
         `npm-run-all --parallel compile-yaml:${dir} compile-json:${dir}`
       );
       expect(updatedPackageJson.scripts[`postcompile:${dir}`]).toBe(
-        `ts-node --project tools/tsconfig.json tools/postbuild.ts ${dir}`
+        `node --import=tsx tools/postbuild.ts ${dir}`
       );
       expect(updatedPackageJson.scripts[`compile-yaml:${dir}`]).toBe(
         `tsp compile projects/${dir}/main.tsp --config "./projects/${dir}/tspconfig-yaml.yaml"`
@@ -401,7 +401,7 @@ describe.concurrent('api:new scripts', () => {
         `npm-run-all --parallel compile-yaml:${dir} compile-json:${dir}`
       );
       expect(updatedPackageJson.scripts[`postcompile:${dir}`]).toBe(
-        `ts-node --project tools/tsconfig.json tools/postbuild.ts ${dir}`
+        `node --import=tsx tools/postbuild.ts ${dir}`
       );
       expect(updatedPackageJson.scripts[`compile-yaml:${dir}`]).toBe(
         `tsp compile projects/${dir}/main.tsp --config "./projects/${dir}/tspconfig-yaml.yaml"`
@@ -442,7 +442,7 @@ describe.concurrent('api:new scripts', () => {
         `npm-run-all --parallel compile-yaml:${dir} compile-json:${dir}`
       );
       expect(updatedPackageJson.scripts[`postcompile:${dir}`]).toBe(
-        `ts-node --project tools/tsconfig.json tools/postbuild.ts ${dir}`
+        `node --import=tsx tools/postbuild.ts ${dir}`
       );
       expect(updatedPackageJson.scripts[`compile-yaml:${dir}`]).toBe(
         `tsp compile projects/${dir}/main.tsp --config "./projects/${dir}/tspconfig-yaml.yaml"`

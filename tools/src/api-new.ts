@@ -100,7 +100,7 @@ export const updatePackageJson = (projectDir: string): void => {
   packageJson['scripts'][`compile:${projectDir}`] =
     `npm-run-all --parallel compile-yaml:${projectDir} compile-json:${projectDir}`;
   packageJson['scripts'][`postcompile:${projectDir}`] =
-    `ts-node --project tools/tsconfig.json tools/postbuild.ts ${projectDir}`;
+    `node --import=tsx tools/postbuild.ts ${projectDir}`;
   packageJson['scripts'][`compile-yaml:${projectDir}`] =
     `tsp compile projects/${projectDir}/main.tsp --config \"./projects/${projectDir}/tspconfig-yaml.yaml\"`;
   packageJson['scripts'][`compile-json:${projectDir}`] =
