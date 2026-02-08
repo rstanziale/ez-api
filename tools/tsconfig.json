@@ -1,28 +1,10 @@
 {
-  "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
-    "forceConsistentCasingInFileNames": false,
-    "strict": false,
-    "noImplicitOverride": false,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": false,
-    "noFallthroughCasesInSwitch": false,
-    "sourceMap": true,
-    "declaration": false,
-    "downlevelIteration": true,
-    "experimentalDecorators": true,
-    "moduleResolution": "node",
-    "importHelpers": true,
-    "useDefineForClassFields": false,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "outDir": "../dist/tools",
-    "rootDir": ".",
-    "module": "commonjs",
-    "target": "es5",
-    "types": ["node"],
-    "lib": ["ES2022", "dom"]
-  },
-  "include": ["**/*.ts"]
+    "noEmit": true,
+    "target": "esnext",
+    "module": "nodenext",
+    "rewriteRelativeImportExtensions": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": false
+  }
 }

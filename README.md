@@ -27,7 +27,7 @@ ez-api leverages Microsoft's TypeSpec to define and maintain consistent APIs acr
 ### Installation
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### Quick Start
@@ -35,13 +35,13 @@ npm install
 1. Create your first API project:
 
 ```bash
-npm run api:new my-awesome-api
+pnpm run api:new my-awesome-api
 ```
 
 or import an existing OpenAPI specification:
 
 ```bash
-npm run api:import my-awesome-api path/to/openapi.yaml
+pnpm run api:import my-awesome-api path/to/openapi.yaml
 ```
 
 2. Customize project settings in `config.json`:
@@ -56,7 +56,7 @@ npm run api:import my-awesome-api path/to/openapi.yaml
 3. Build OpenAPI specifications:
 
 ```bash
-npm run compile:my-awesome-api
+pnpm run compile:my-awesome-api
 ```
 
 ### Project Commands
