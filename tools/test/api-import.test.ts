@@ -8,8 +8,8 @@ import {
   createTmpProjectDir,
   deleteTmpProjectDir,
   importOasFile,
-} from '../src/api-import';
-import { PROJECTS_DIR, TMP_DIR } from '../src/const/api-const';
+} from '../src/api-import.ts';
+import { PROJECTS_DIR, TMP_DIR } from '../src/const/api-const.ts';
 
 describe.concurrent('api:import scripts', () => {
   // Tell vitest to use fs mock from __mocks__ folder

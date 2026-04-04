@@ -5,7 +5,7 @@ import {
   createTspFiles,
   existProjectDir,
   updatePackageJson,
-} from './src/api-new';
+} from './src/api-new.ts';
 
 const apiNew = (): void => {
   const projectDir: string = process.argv[2];

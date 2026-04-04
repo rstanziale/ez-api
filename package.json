@@ -2,6 +2,7 @@
   "name": "@rs-box/ez-api",
   "version": "1.0.0",
   "description": "API development toolkit powered by TypeSpec",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/rstanziale/ez-api.git"
@@ -18,10 +19,7 @@
     "api:new": "node --import=tsx tools/api-new.ts",
     "api:import": "node --import=tsx tools/api-import.ts",
     "build:all": "npm-run-all --parallel compile:i18n-resources",
-    "compile:i18n-resources": "npm-run-all --parallel compile-yaml:i18n-resources compile-json:i18n-resources",
-    "postcompile:i18n-resources": "node --import=tsx tools/postbuild.ts i18n-resources",
-    "compile-yaml:i18n-resources": "tsp compile projects/i18n-resources/main.tsp --config \"./projects/i18n-resources/tspconfig-yaml.yaml\"",
-    "compile-json:i18n-resources": "tsp compile projects/i18n-resources/main.tsp --config \"./projects/i18n-resources/tspconfig-json.yaml\"",
+    "compile:i18n-resources": "node --import=tsx tools/build.ts i18n-resources",
     "watch:i18n-resources": "tsp compile projects/i18n-resources/main.tsp --watch --emit @typespec/openapi3"
   },
   "author": "Roberto B. Stanziale",

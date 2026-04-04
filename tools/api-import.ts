@@ -3,14 +3,14 @@ import {
   createTmpProjectDir,
   deleteTmpProjectDir,
   importOasFile,
-} from './src/api-import';
+} from './src/api-import.ts';
 import {
   createConfigFile,
   createProjectDir,
   createTspFiles,
   existProjectDir,
   updatePackageJson,
-} from './src/api-new';
+} from './src/api-new.ts';
 
 const apiImport = (): void => {
   const projectDir: string = process.argv[2];

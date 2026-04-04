@@ -2,8 +2,8 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { fs, vol } from 'memfs';
 import { join, resolve } from 'node:path';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ARCHETYPE_CONFIG_FILE, PROJECTS_DIR } from '../src/const/api-const';
-import { getFilenames, getVersion, setDistFiles, setFilenameVersion } from '../src/postbuild';
+import { ARCHETYPE_CONFIG_FILE, PROJECTS_DIR } from '../src/const/api-const.ts';
+import { getFilenames, getVersion, setDistFiles, setFilenameVersion } from '../src/postbuild.ts';
 
 describe('postbuild scripts', () => {
   // Tell vitest to use fs mock from __mocks__ folder
@@ -167,7 +167,7 @@ describe('postbuild scripts', () => {
       );
 
       // Act
-      setDistFiles(files, dir, version);
+      setDistFiles(dir, version, files);
 
       // Assert
       expect(readFileSync).toHaveBeenCalledWith(join(sourceDir, 'api-x.y.z.json'), 'utf-8');
@@ -185,7 +185,7 @@ describe('postbuild scripts', () => {
       const sourceDir = resolve(__dirname, '..', '..', 'doc', `api-${dir}`);
 
       // Act & Assert
-      expect(() => setDistFiles(files, dir, version)).toThrow();
+      expect(() => setDistFiles(dir, version, files)).toThrow();
       expect(readFileSync).toHaveBeenCalledWith(join(sourceDir, 'invalid-file.json'), 'utf-8');
     });
   });
