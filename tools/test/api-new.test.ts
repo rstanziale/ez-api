@@ -1,6 +1,6 @@
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { fs, vol } from 'memfs';
-import { join, resolve } from 'path';
+import { join, resolve } from 'node:path';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import {
   createConfigFile,
@@ -602,7 +602,7 @@ describe.concurrent('api:new scripts', () => {
 
     it('should throw error for undefined input', () => {
       // Arrange
-      const input = undefined;
+      const input = undefined as unknown as string;
 
       // Act & Assert
       expect(() => toSentence(input)).toThrow('Input is required');

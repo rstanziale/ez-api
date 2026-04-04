@@ -1,5 +1,5 @@
-import { mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { join, resolve } from 'path';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { ARCHETYPE_CONFIG_FILE, PROJECTS_DIR } from './const/api-const';
 
 /**

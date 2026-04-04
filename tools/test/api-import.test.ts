@@ -1,7 +1,7 @@
-import { execSync } from 'child_process';
-import { copyFileSync, mkdirSync, rmSync } from 'fs';
+import { execSync } from 'node:child_process';
+import { copyFileSync, mkdirSync, rmSync } from 'node:fs';
 import { fs, vol } from 'memfs';
-import { join, resolve } from 'path';
+import { join, resolve } from 'node:path';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   copyMainFileToProjectDir,

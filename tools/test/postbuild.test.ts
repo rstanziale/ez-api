@@ -1,6 +1,6 @@
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { fs, vol } from 'memfs';
-import { join, resolve } from 'path';
+import { join, resolve } from 'node:path';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ARCHETYPE_CONFIG_FILE, PROJECTS_DIR } from '../src/const/api-const';
 import { getFilenames, getVersion, setDistFiles, setFilenameVersion } from '../src/postbuild';

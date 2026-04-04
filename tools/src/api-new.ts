@@ -1,5 +1,5 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { join, resolve } from 'path';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import {
   ARCHETYPE_CONFIG_FILE,
   ARCHETYPE_DIR,
@@ -102,9 +102,9 @@ export const updatePackageJson = (projectDir: string): void => {
   packageJson['scripts'][`postcompile:${projectDir}`] =
     `node --import=tsx tools/postbuild.ts ${projectDir}`;
   packageJson['scripts'][`compile-yaml:${projectDir}`] =
-    `tsp compile projects/${projectDir}/main.tsp --config \"./projects/${projectDir}/tspconfig-yaml.yaml\"`;
+    `tsp compile projects/${projectDir}/main.tsp --config "./projects/${projectDir}/tspconfig-yaml.yaml"`;
   packageJson['scripts'][`compile-json:${projectDir}`] =
-    `tsp compile projects/${projectDir}/main.tsp --config \"./projects/${projectDir}/tspconfig-json.yaml\"`;
+    `tsp compile projects/${projectDir}/main.tsp --config "./projects/${projectDir}/tspconfig-json.yaml"`;
   packageJson['scripts'][`watch:${projectDir}`] =
     `tsp compile projects/${projectDir}/main.tsp --watch --emit @typespec/openapi3`;
 
