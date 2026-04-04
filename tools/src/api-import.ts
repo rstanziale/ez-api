@@ -1,7 +1,7 @@
-import { execSync } from 'child_process';
-import { copyFileSync, mkdirSync, rmSync } from 'fs';
-import { resolve } from 'path';
-import { PROJECTS_DIR, TMP_DIR } from './const/api-const';
+import { execSync } from 'node:child_process';
+import { copyFileSync, mkdirSync, rmSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { PROJECTS_DIR, TMP_DIR } from './const/api-const.ts';
 
 /**
  * Create a temporary project directory.

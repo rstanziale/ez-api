@@ -3,8 +3,12 @@
     "noEmit": true,
     "target": "esnext",
     "module": "nodenext",
+    "moduleResolution": "nodenext",
     "rewriteRelativeImportExtensions": true,
     "erasableSyntaxOnly": true,
-    "verbatimModuleSyntax": false
+    "verbatimModuleSyntax": false,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "types": ["node", "vitest"]
   }
 }

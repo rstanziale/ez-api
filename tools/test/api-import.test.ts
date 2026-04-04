@@ -1,15 +1,15 @@
-import { execSync } from 'child_process';
-import { copyFileSync, mkdirSync, rmSync } from 'fs';
+import { execSync } from 'node:child_process';
+import { copyFileSync, mkdirSync, rmSync } from 'node:fs';
 import { fs, vol } from 'memfs';
-import { join, resolve } from 'path';
+import { join, resolve } from 'node:path';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   copyMainFileToProjectDir,
   createTmpProjectDir,
   deleteTmpProjectDir,
   importOasFile,
-} from '../src/api-import';
-import { PROJECTS_DIR, TMP_DIR } from '../src/const/api-const';
+} from '../src/api-import.ts';
+import { PROJECTS_DIR, TMP_DIR } from '../src/const/api-const.ts';
 
 describe.concurrent('api:import scripts', () => {
   // Tell vitest to use fs mock from __mocks__ folder

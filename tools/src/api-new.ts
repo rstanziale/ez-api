@@ -1,5 +1,5 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { join, resolve } from 'path';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import {
   ARCHETYPE_CONFIG_FILE,
   ARCHETYPE_DIR,
@@ -8,7 +8,7 @@ import {
   PROJECT_NAME,
   PROJECT_NAMESPACE,
   PROJECTS_DIR,
-} from './const/api-const';
+} from './const/api-const.ts';
 
 /**
  * Check if project directory exists
@@ -98,13 +98,7 @@ export const updatePackageJson = (projectDir: string): void => {
 
   // Update scripts
   packageJson['scripts'][`compile:${projectDir}`] =
-    `npm-run-all --parallel compile-yaml:${projectDir} compile-json:${projectDir}`;
-  packageJson['scripts'][`postcompile:${projectDir}`] =
-    `node --import=tsx tools/postbuild.ts ${projectDir}`;
-  packageJson['scripts'][`compile-yaml:${projectDir}`] =
-    `tsp compile projects/${projectDir}/main.tsp --config \"./projects/${projectDir}/tspconfig-yaml.yaml\"`;
-  packageJson['scripts'][`compile-json:${projectDir}`] =
-    `tsp compile projects/${projectDir}/main.tsp --config \"./projects/${projectDir}/tspconfig-json.yaml\"`;
+    `node --import=tsx tools/build.ts ${projectDir}`;
   packageJson['scripts'][`watch:${projectDir}`] =
     `tsp compile projects/${projectDir}/main.tsp --watch --emit @typespec/openapi3`;
 

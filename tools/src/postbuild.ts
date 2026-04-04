@@ -1,6 +1,10 @@
-import { mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { join, resolve } from 'path';
-import { ARCHETYPE_CONFIG_FILE, PROJECTS_DIR } from './const/api-const';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { ARCHETYPE_CONFIG_FILE, PROJECTS_DIR } from './const/api-const.ts';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 /**
  * Get config.json version attribute
@@ -32,11 +36,11 @@ export const getFilenames = (projectDir: string): string[] => {
 
 /**
  * Iterate list of file and create dist file for each one
- * @param files list of file to analyze
  * @param projectDir name of directory where to find config.json
  * @param version to apply
+ * @param files list of file to analyze
  */
-export const setDistFiles = (files: string[] = [], projectDir: string, version: string): void => {
+export const setDistFiles = (projectDir: string, version: string, files: string[] = []): void => {
   files.forEach(file => {
     // Read source content file
     const sourceDir = resolve(__dirname, '..', '..', 'doc', `api-${projectDir}`);

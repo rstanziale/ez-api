@@ -1,6 +1,6 @@
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { fs, vol } from 'memfs';
-import { join, resolve } from 'path';
+import { join, resolve } from 'node:path';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import {
   createConfigFile,
@@ -11,14 +11,14 @@ import {
   toCamelCase,
   toSentence,
   updatePackageJson,
-} from '../src/api-new';
+} from '../src/api-new.ts';
 import {
   ARCHETYPE_CONFIG_FILE,
   ARCHETYPE_DIR,
   ARCHETYPE_TSP_CONFIG_JSON,
   ARCHETYPE_TSP_CONFIG_YAML,
   PROJECTS_DIR,
-} from '../src/const/api-const';
+} from '../src/const/api-const.ts';
 
 describe.concurrent('api:new scripts', () => {
   // Tell vitest to use fs mock from __mocks__ folder
@@ -356,16 +356,7 @@ describe.concurrent('api:new scripts', () => {
       // Assert
       const updatedPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8') as string);
       expect(updatedPackageJson.scripts[`compile:${dir}`]).toBe(
-        `npm-run-all --parallel compile-yaml:${dir} compile-json:${dir}`
-      );
-      expect(updatedPackageJson.scripts[`postcompile:${dir}`]).toBe(
-        `node --import=tsx tools/postbuild.ts ${dir}`
-      );
-      expect(updatedPackageJson.scripts[`compile-yaml:${dir}`]).toBe(
-        `tsp compile projects/${dir}/main.tsp --config "./projects/${dir}/tspconfig-yaml.yaml"`
-      );
-      expect(updatedPackageJson.scripts[`compile-json:${dir}`]).toBe(
-        `tsp compile projects/${dir}/main.tsp --config "./projects/${dir}/tspconfig-json.yaml"`
+        `node --import=tsx tools/build.ts ${dir}`
       );
       expect(updatedPackageJson.scripts[`watch:${dir}`]).toBe(
         `tsp compile projects/${dir}/main.tsp --watch --emit @typespec/openapi3`
@@ -398,16 +389,7 @@ describe.concurrent('api:new scripts', () => {
       // Assert
       const updatedPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8') as string);
       expect(updatedPackageJson.scripts[`compile:${dir}`]).toBe(
-        `npm-run-all --parallel compile-yaml:${dir} compile-json:${dir}`
-      );
-      expect(updatedPackageJson.scripts[`postcompile:${dir}`]).toBe(
-        `node --import=tsx tools/postbuild.ts ${dir}`
-      );
-      expect(updatedPackageJson.scripts[`compile-yaml:${dir}`]).toBe(
-        `tsp compile projects/${dir}/main.tsp --config "./projects/${dir}/tspconfig-yaml.yaml"`
-      );
-      expect(updatedPackageJson.scripts[`compile-json:${dir}`]).toBe(
-        `tsp compile projects/${dir}/main.tsp --config "./projects/${dir}/tspconfig-json.yaml"`
+        `node --import=tsx tools/build.ts ${dir}`
       );
       expect(updatedPackageJson.scripts[`watch:${dir}`]).toBe(
         `tsp compile projects/${dir}/main.tsp --watch --emit @typespec/openapi3`
@@ -439,16 +421,7 @@ describe.concurrent('api:new scripts', () => {
       // Assert
       const updatedPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8') as string);
       expect(updatedPackageJson.scripts[`compile:${dir}`]).toBe(
-        `npm-run-all --parallel compile-yaml:${dir} compile-json:${dir}`
-      );
-      expect(updatedPackageJson.scripts[`postcompile:${dir}`]).toBe(
-        `node --import=tsx tools/postbuild.ts ${dir}`
-      );
-      expect(updatedPackageJson.scripts[`compile-yaml:${dir}`]).toBe(
-        `tsp compile projects/${dir}/main.tsp --config "./projects/${dir}/tspconfig-yaml.yaml"`
-      );
-      expect(updatedPackageJson.scripts[`compile-json:${dir}`]).toBe(
-        `tsp compile projects/${dir}/main.tsp --config "./projects/${dir}/tspconfig-json.yaml"`
+        `node --import=tsx tools/build.ts ${dir}`
       );
       expect(updatedPackageJson.scripts[`watch:${dir}`]).toBe(
         `tsp compile projects/${dir}/main.tsp --watch --emit @typespec/openapi3`
@@ -602,7 +575,7 @@ describe.concurrent('api:new scripts', () => {
 
     it('should throw error for undefined input', () => {
       // Arrange
-      const input = undefined;
+      const input = undefined as unknown as string;
 
       // Act & Assert
       expect(() => toSentence(input)).toThrow('Input is required');
