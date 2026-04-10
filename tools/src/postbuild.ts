@@ -1,10 +1,9 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join, resolve } from 'node:path';
+
 import { ARCHETYPE_CONFIG_FILE, PROJECTS_DIR } from './const/api-const.ts';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = import.meta.dirname;
 
 /**
  * Get config.json version attribute
