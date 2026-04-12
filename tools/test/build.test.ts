@@ -1,5 +1,7 @@
 import { execSync } from 'node:child_process';
+
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { getCompileCommands, runCommand } from '../src/build.ts';
 
 vi.mock('node:child_process');
@@ -19,10 +21,10 @@ describe('build scripts', () => {
 
       // Assert
       expect(commands).toBeInstanceOf(Array);
-      expect(commands.length).toBe(2);
+      expect(commands.length).toBe(1);
     });
 
-    it('should return commands with yaml and json config files', () => {
+    it('should return commands with yaml config files', () => {
       // Arrange
       const projectDir = 'test-project';
 
@@ -31,10 +33,7 @@ describe('build scripts', () => {
 
       // Assert
       expect(commands).toContain(
-        'tsp compile projects/test-project/main.tsp --config "./projects/test-project/tspconfig-yaml.yaml"'
-      );
-      expect(commands).toContain(
-        'tsp compile projects/test-project/main.tsp --config "./projects/test-project/tspconfig-json.yaml"'
+        'tsp compile projects/test-project/main.tsp --config "./projects/test-project/tspconfig.yaml"'
       );
     });
 
@@ -62,21 +61,7 @@ describe('build scripts', () => {
       // Assert
       const yamlCommand = commands[0];
       expect(yamlCommand).toMatch(
-        /tsp compile projects\/test-project\/main\.tsp --config "\.\/projects\/test-project\/tspconfig-yaml\.yaml"/
-      );
-    });
-
-    it('should format json config command correctly', () => {
-      // Arrange
-      const projectDir = 'test-project';
-
-      // Act
-      const commands = getCompileCommands(projectDir);
-
-      // Assert
-      const jsonCommand = commands[1];
-      expect(jsonCommand).toMatch(
-        /tsp compile projects\/test-project\/main\.tsp --config "\.\/projects\/test-project\/tspconfig-json\.yaml"/
+        /tsp compile projects\/test-project\/main\.tsp --config "\.\/projects\/test-project\/tspconfig\.yaml"/
       );
     });
 
@@ -88,22 +73,10 @@ describe('build scripts', () => {
       const commands = getCompileCommands(projectDir);
 
       // Assert
-      expect(commands.length).toBe(2);
+      expect(commands.length).toBe(1);
       commands.forEach(command => {
         expect(command).toContain('my-test-project_123');
       });
-    });
-
-    it('should return commands in correct order (yaml first, json second)', () => {
-      // Arrange
-      const projectDir = 'test-project';
-
-      // Act
-      const commands = getCompileCommands(projectDir);
-
-      // Assert
-      expect(commands[0]).toContain('yaml');
-      expect(commands[1]).toContain('json');
     });
   });
 
@@ -188,14 +161,10 @@ describe('build scripts', () => {
       });
 
       // Assert
-      expect(mockExecSync).toHaveBeenCalledTimes(2);
+      expect(mockExecSync).toHaveBeenCalledTimes(1);
       expect(mockExecSync).toHaveBeenNthCalledWith(
         1,
-        'tsp compile projects/test-project/main.tsp --config "./projects/test-project/tspconfig-yaml.yaml"'
-      );
-      expect(mockExecSync).toHaveBeenNthCalledWith(
-        2,
-        'tsp compile projects/test-project/main.tsp --config "./projects/test-project/tspconfig-json.yaml"'
+        'tsp compile projects/test-project/main.tsp --config "./projects/test-project/tspconfig.yaml"'
       );
     });
 
@@ -213,7 +182,7 @@ describe('build scripts', () => {
       });
 
       // Assert
-      expect(mockExecSync).toHaveBeenCalledTimes(4);
+      expect(mockExecSync).toHaveBeenCalledTimes(2);
     });
   });
 });

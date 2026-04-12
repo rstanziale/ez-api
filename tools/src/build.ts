@@ -6,10 +6,10 @@ import { execSync } from 'node:child_process';
  * @returns command list to execute
  */
 export const getCompileCommands = (projectDir: string): string[] => {
-  const compileFilesExt = ['yaml', 'json'];
+  const compileFilesExt = ['yaml'];
 
   return compileFilesExt.map(ext => {
-    const tspConfigFile = `./projects/${projectDir}/tspconfig-${ext}.yaml`;
+    const tspConfigFile = `./projects/${projectDir}/tspconfig.${ext}`;
 
     return `tsp compile projects/${projectDir}/main.tsp --config "${tspConfigFile}"`;
   });

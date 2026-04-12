@@ -1,7 +1,9 @@
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
-import { fs, vol } from 'memfs';
 import { join, resolve } from 'node:path';
+
+import { fs, vol } from 'memfs';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
+
 import {
   createConfigFile,
   createMainFile,
@@ -15,8 +17,7 @@ import {
 import {
   ARCHETYPE_CONFIG_FILE,
   ARCHETYPE_DIR,
-  ARCHETYPE_TSP_CONFIG_JSON,
-  ARCHETYPE_TSP_CONFIG_YAML,
+  ARCHETYPE_TSP_CONFIG,
   PROJECTS_DIR,
 } from '../src/const/api-const.ts';
 
@@ -38,10 +39,8 @@ describe.concurrent('api:new scripts', () => {
           '{"filename":"api-#{PROJECT_NAME}","version":"1.0.0-beta.1"}',
         [join(sourceDir, 'main')]:
           'import "@typespec/http"; import "@typespec/openapi"; import "@typespec/versioning"; using TypeSpec.Http; using TypeSpec.OpenAPI; using TypeSpec.Versioning; @service({ title: "#{PROJECT_NAME} APIs", }) @versioned(Versions) namespace #{PROJECT_NAMESPACE}Namespace; enum Versions { `1.0.0-beta.1`, }',
-        [join(sourceDir, ARCHETYPE_TSP_CONFIG_JSON)]:
-          'emit: - "@typespec/openapi3" options: "@typespec/openapi3": file-type: json output-file: api-#{PROJECT_NAME}-x.y.z.json emitter-output-dir: "{project-root}/../../doc/api-#{PROJECT_NAME}"',
-        [join(sourceDir, ARCHETYPE_TSP_CONFIG_YAML)]:
-          'emit: - "@typespec/openapi3" options: "@typespec/openapi3": file-type: yaml output-file: api-#{PROJECT_NAME}-x.y.z.yaml emitter-output-dir: "{project-root}/../../doc/api-#{PROJECT_NAME}"',
+        [join(sourceDir, ARCHETYPE_TSP_CONFIG)]:
+          'emit: - "@typespec/openapi3" options: "@typespec/openapi3": file-type: - json - yaml output-file: api-#{PROJECT_NAME}-x.y.z.{file-type} emitter-output-dir: "{project-root}/../../doc/api-#{PROJECT_NAME}"',
       },
       sourceDir
     );
@@ -234,9 +233,10 @@ describe.concurrent('api:new scripts', () => {
       createTspFiles(dir);
 
       // Assert
-      ['tspconfig-json.yaml', 'tspconfig-yaml.yaml'].forEach(filename => {
+      [`${ARCHETYPE_TSP_CONFIG}.yaml`].forEach(filename => {
         const filePath = resolve(sourceDir, filename);
         expect(existsSync(filePath)).toBe(true);
+
         const fileContent = fs.readFileSync(filePath, 'utf-8') as string;
         expect(fileContent).toContain(`api-${dir}-x.y.z`);
         expect(writeFileSync).toHaveBeenCalledWith(filePath, fileContent);
@@ -254,7 +254,7 @@ describe.concurrent('api:new scripts', () => {
       createTspFiles(dir);
 
       // Assert
-      ['tspconfig-json.yaml', 'tspconfig-yaml.yaml'].forEach(filename => {
+      [`${ARCHETYPE_TSP_CONFIG}.yaml`].forEach(filename => {
         const filePath = resolve(sourceDir, filename);
         expect(existsSync(filePath)).toBe(true);
         const fileContent = fs.readFileSync(filePath, 'utf-8') as string;
@@ -274,9 +274,10 @@ describe.concurrent('api:new scripts', () => {
       createTspFiles(dir);
 
       // Assert
-      ['tspconfig-json.yaml', 'tspconfig-yaml.yaml'].forEach(filename => {
+      [`${ARCHETYPE_TSP_CONFIG}.yaml`].forEach(filename => {
         const filePath = resolve(sourceDir, filename);
         expect(existsSync(filePath)).toBe(true);
+
         const fileContent = fs.readFileSync(filePath, 'utf-8') as string;
         expect(fileContent).toContain(dir);
         expect(writeFileSync).toHaveBeenCalledWith(filePath, fileContent);
@@ -298,6 +299,7 @@ describe.concurrent('api:new scripts', () => {
       // Assert
       const mainFilePath = resolve(sourceDir, 'main.tsp');
       expect(existsSync(mainFilePath)).toBe(true);
+
       const mainFileContent = fs.readFileSync(mainFilePath, 'utf-8') as string;
       expect(mainFileContent).toContain(toSentence(dir));
       expect(mainFileContent).toContain(toCamelCase(dir));
@@ -317,6 +319,7 @@ describe.concurrent('api:new scripts', () => {
       // Assert
       const mainFilePath = resolve(sourceDir, 'main.tsp');
       expect(existsSync(mainFilePath)).toBe(true);
+
       const mainFileContent = fs.readFileSync(mainFilePath, 'utf-8') as string;
       expect(mainFileContent).toContain(toSentence(dir));
       expect(mainFileContent).toContain(toCamelCase(dir));

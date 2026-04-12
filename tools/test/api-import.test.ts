@@ -1,8 +1,10 @@
 import { execSync } from 'node:child_process';
 import { copyFileSync, mkdirSync, rmSync } from 'node:fs';
-import { fs, vol } from 'memfs';
 import { join, resolve } from 'node:path';
+
+import { fs, vol } from 'memfs';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import {
   copyMainFileToProjectDir,
   createTmpProjectDir,

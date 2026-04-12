@@ -9,6 +9,9 @@
   "bracketSameLine": true,
   "printWidth": 100,
   "endOfLine": "auto",
-  "plugins": ["@typespec/prettier-plugin-typespec"],
+  "importOrder": ["^node:(.*)$", "^[a-zA-Z]", "^[./]"],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "plugins": ["@typespec/prettier-plugin-typespec", "@trivago/prettier-plugin-sort-imports"],
   "overrides": [{ "files": "*.tsp", "options": { "parser": "typespec" } }]
 }

@@ -1,14 +1,16 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+
 import {
   ARCHETYPE_CONFIG_FILE,
   ARCHETYPE_DIR,
-  ARCHETYPE_TSP_CONFIG_JSON,
-  ARCHETYPE_TSP_CONFIG_YAML,
+  ARCHETYPE_TSP_CONFIG,
+  PROJECTS_DIR,
   PROJECT_NAME,
   PROJECT_NAMESPACE,
-  PROJECTS_DIR,
 } from './const/api-const.ts';
+
+const __dirname = import.meta.dirname;
 
 /**
  * Check if project directory exists
@@ -54,7 +56,7 @@ export const createConfigFile = (projectDir: string): void => {
 export const createTspFiles = (projectDir: string): void => {
   const sourceDir = resolve(__dirname, '..', ARCHETYPE_DIR);
 
-  [ARCHETYPE_TSP_CONFIG_JSON, ARCHETYPE_TSP_CONFIG_YAML].forEach((filename: string) => {
+  [ARCHETYPE_TSP_CONFIG].forEach((filename: string) => {
     // Read from archetype dir config.json file
     let file = readFileSync(join(sourceDir, filename), 'utf-8');
 
