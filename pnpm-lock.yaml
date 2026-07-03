@@ -35,7 +35,7 @@ importers:
         version: 20.5.3
       '@trivago/prettier-plugin-sort-imports':
         specifier: ^6.0.2
-        version: 6.0.2(prettier@3.8.3)
+        version: 6.0.2(prettier@3.9.4)
       '@types/node':
         specifier: ^25.6.2
         version: 25.6.2
@@ -58,8 +58,8 @@ importers:
         specifier: ^4.1.5
         version: 4.1.5
       prettier:
-        specifier: ^3.8.3
-        version: 3.8.3
+        specifier: ^3.9.4
+        version: 3.9.4
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
@@ -1823,8 +1823,13 @@ packages:
     resolution: {integrity: sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A==}
     engines: {node: ^10 || ^12 || >=14}
 
-  prettier@3.8.3:
-    resolution: {integrity: sha512-7igPTM53cGHMW8xWuVTydi2KO233VFiTNyF5hLJqpilHfmn8C8gPf+PS7dUT64YcXFbiMGZxS9pCSxL/Dxm/Jw==}
+  prettier@3.8.5:
+    resolution: {integrity: sha512-zxcTTCedNGJM4R8sj/Cq/F0W/c4iE0afWBcBwMTRtw4WHYP9TWkYjdiH3npPRUYsXQCPR0hTU9yjovOu+E6EQA==}
+    engines: {node: '>=14'}
+    hasBin: true
+
+  prettier@3.9.4:
+    resolution: {integrity: sha512-yWG/o/4oJfo036EKAfK6ACAoDOfHeRHx4tuxkfBZiauURiaSmYwlpOr5LQqKtIkRD2z1PLteme2WoxEnj4tHTg==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -2916,7 +2921,7 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
-  '@trivago/prettier-plugin-sort-imports@6.0.2(prettier@3.8.3)':
+  '@trivago/prettier-plugin-sort-imports@6.0.2(prettier@3.9.4)':
     dependencies:
       '@babel/generator': 7.29.1
       '@babel/parser': 7.29.3
@@ -2926,7 +2931,7 @@ snapshots:
       lodash-es: 4.18.1
       minimatch: 9.0.9
       parse-imports-exports: 0.2.4
-      prettier: 3.8.3
+      prettier: 3.9.4
     transitivePeerDependencies:
       - supports-color
 
@@ -2962,7 +2967,7 @@ snapshots:
       is-unicode-supported: 2.1.0
       mustache: 4.2.0
       picocolors: 1.1.1
-      prettier: 3.8.3
+      prettier: 3.9.4
       semver: 7.8.0
       tar: 7.5.15
       temporal-polyfill: 0.3.2
@@ -2997,7 +3002,7 @@ snapshots:
 
   '@typespec/prettier-plugin-typespec@1.11.0':
     dependencies:
-      prettier: 3.8.3
+      prettier: 3.8.5
 
   '@typespec/rest@0.83.0(@typespec/compiler@1.13.0(@types/node@25.6.2))(@typespec/http@1.13.0(@typespec/compiler@1.13.0(@types/node@25.6.2)))':
     dependencies:
@@ -3985,7 +3990,9 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  prettier@3.8.3: {}
+  prettier@3.8.5: {}
+
+  prettier@3.9.4: {}
 
   read-pkg@3.0.0:
     dependencies:
