@@ -300,7 +300,7 @@ describe.concurrent('api:new scripts', () => {
       const packageJsonPath = resolve(__dirname, '..', '..', 'package.json');
       const packageJsonContent = {
         scripts: {
-          'build:all': 'compile:existing-project',
+          'build:all': 'build:existing-project',
         },
       };
       fs.writeFileSync(packageJsonPath, JSON.stringify(packageJsonContent, null, 2));
@@ -310,13 +310,13 @@ describe.concurrent('api:new scripts', () => {
 
       // Assert
       const updatedPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8') as string);
-      expect(updatedPackageJson.scripts[`compile:${dir}`]).toBe(
+      expect(updatedPackageJson.scripts[`build:${dir}`]).toBe(
         `node --import=tsx tools/build.ts ${dir}`
       );
       expect(updatedPackageJson.scripts[`watch:${dir}`]).toBe(
         `tsp compile projects/${dir}/main.tsp --watch --emit @typespec/openapi3`
       );
-      expect(updatedPackageJson.scripts['build:all']).toContain(`compile:${dir}`);
+      expect(updatedPackageJson.scripts['build:all']).toContain(`build:${dir}`);
       expect(writeFileSync).toHaveBeenCalledWith(
         packageJsonPath,
         JSON.stringify(updatedPackageJson, null, 2)
@@ -333,7 +333,7 @@ describe.concurrent('api:new scripts', () => {
       const packageJsonPath = resolve(__dirname, '..', '..', 'package.json');
       const packageJsonContent = {
         scripts: {
-          'build:all': 'compile:existing-project',
+          'build:all': 'build:existing-project',
         },
       };
       fs.writeFileSync(packageJsonPath, JSON.stringify(packageJsonContent, null, 2));
@@ -343,13 +343,13 @@ describe.concurrent('api:new scripts', () => {
 
       // Assert
       const updatedPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8') as string);
-      expect(updatedPackageJson.scripts[`compile:${dir}`]).toBe(
+      expect(updatedPackageJson.scripts[`build:${dir}`]).toBe(
         `node --import=tsx tools/build.ts ${dir}`
       );
       expect(updatedPackageJson.scripts[`watch:${dir}`]).toBe(
         `tsp compile projects/${dir}/main.tsp --watch --emit @typespec/openapi3`
       );
-      expect(updatedPackageJson.scripts['build:all']).toContain(`compile:${dir}`);
+      expect(updatedPackageJson.scripts['build:all']).toContain(`build:${dir}`);
       expect(writeFileSync).toHaveBeenCalledWith(
         packageJsonPath,
         JSON.stringify(updatedPackageJson, null, 2)
@@ -365,7 +365,7 @@ describe.concurrent('api:new scripts', () => {
       const packageJsonPath = resolve(__dirname, '..', '..', 'package.json');
       const packageJsonContent = {
         scripts: {
-          'build:all': 'compile:existing-project',
+          'build:all': 'build:existing-project',
         },
       };
       fs.writeFileSync(packageJsonPath, JSON.stringify(packageJsonContent, null, 2));
@@ -375,13 +375,13 @@ describe.concurrent('api:new scripts', () => {
 
       // Assert
       const updatedPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8') as string);
-      expect(updatedPackageJson.scripts[`compile:${dir}`]).toBe(
+      expect(updatedPackageJson.scripts[`build:${dir}`]).toBe(
         `node --import=tsx tools/build.ts ${dir}`
       );
       expect(updatedPackageJson.scripts[`watch:${dir}`]).toBe(
         `tsp compile projects/${dir}/main.tsp --watch --emit @typespec/openapi3`
       );
-      expect(updatedPackageJson.scripts['build:all']).toContain(`compile:${dir}`);
+      expect(updatedPackageJson.scripts['build:all']).toContain(`build:${dir}`);
       expect(writeFileSync).toHaveBeenCalledWith(
         packageJsonPath,
         JSON.stringify(updatedPackageJson, null, 2)
