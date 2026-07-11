@@ -99,14 +99,13 @@ export const updatePackageJson = (projectDir: string): void => {
   const packageJson = JSON.parse(packageJsonFile);
 
   // Update scripts
-  packageJson['scripts'][`compile:${projectDir}`] =
-    `node --import=tsx tools/build.ts ${projectDir}`;
+  packageJson['scripts'][`build:${projectDir}`] = `node --import=tsx tools/build.ts ${projectDir}`;
   packageJson['scripts'][`watch:${projectDir}`] =
     `tsp compile projects/${projectDir}/main.tsp --watch --emit @typespec/openapi3`;
 
   // Update build all script
   const buildAllScript = packageJson['scripts']['build:all'];
-  packageJson['scripts']['build:all'] = buildAllScript.concat(` compile:${projectDir}`);
+  packageJson['scripts']['build:all'] = buildAllScript.concat(` build:${projectDir}`);
 
   // Write package.json
   writeFileSync(join(sourceDir, 'package.json'), JSON.stringify(packageJson, null, 2));

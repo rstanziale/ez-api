@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
 import { fs, vol } from 'memfs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, test, vi } from 'vitest';
 
 import { ARCHETYPE_CONFIG_FILE, PROJECTS_DIR } from '../src/const/api-const.ts';
 import { getFilenames, getVersion, setDistFiles, setFilenameVersion } from '../src/postbuild.ts';
@@ -193,76 +193,23 @@ describe('postbuild scripts', () => {
   });
 
   describe.concurrent('setFilenameVersion', () => {
-    it('should replace x.y.z pattern with provided version', () => {
-      // Arrange
-      const filename = 'api-x.y.z.json';
-      const version = '1.2.3';
+    test.each([
+      ['api-x.y.z.json', '1.2.3', 'api-1.2.3.json'],
+      ['api-x.y.z.yaml', '2.0.0-beta', 'api-2.0.0-beta.yaml'],
+      ['api-1.2.3.json', '3.4.5', 'api-1.2.3.json'],
+      ['api-x.y.z.json', '', 'api-.json'],
+      ['api-x.y.z.json', undefined, 'api-0.0.0.json'],
+      ['api-x.y.z.yaml', '1.0.0-alpha.1', 'api-1.0.0-alpha.1.yaml'],
+    ])(
+      'should replace x.y.z pattern with provided version for filename: %s and version: %s',
+      (filename, version, expected) => {
+        // Act
+        const result = setFilenameVersion(filename, version);
 
-      // Act
-      const result = setFilenameVersion(filename, version);
-
-      // Assert
-      expect(result).toBe('api-1.2.3.json');
-    });
-
-    it('should handle semantic version formats', () => {
-      // Arrange
-      const filename = 'api-x.y.z.yaml';
-      const version = '2.0.0-beta';
-
-      // Act
-      const result = setFilenameVersion(filename, version);
-
-      // Assert
-      expect(result).toBe('api-2.0.0-beta.yaml');
-    });
-
-    it('should return original string if pattern not found', () => {
-      // Arrange
-      const filename = 'api-1.2.3.json';
-      const version = '3.4.5';
-
-      // Act
-      const result = setFilenameVersion(filename, version);
-
-      // Assert
-      expect(result).toBe('api-1.2.3.json');
-    });
-
-    it('should handle empty version string', () => {
-      // Arrange
-      const filename = 'api-x.y.z.json';
-      const version = '';
-
-      // Act
-      const result = setFilenameVersion(filename, version);
-
-      // Assert
-      expect(result).toBe('api-.json');
-    });
-
-    it('should handle undefined version string', () => {
-      // Arrange
-      const filename = 'api-x.y.z.json';
-
-      // Act
-      const result = setFilenameVersion(filename);
-
-      // Assert
-      expect(result).toBe('api-0.0.0.json');
-    });
-
-    it('should handle version with special characters', () => {
-      // Arrange
-      const filename = 'api-x.y.z.yaml';
-      const version = '1.0.0-alpha.1';
-
-      // Act
-      const result = setFilenameVersion(filename, version);
-
-      // Assert
-      expect(result).toBe('api-1.0.0-alpha.1.yaml');
-    });
+        // Assert
+        expect(result).toBe(expected);
+      }
+    );
 
     it('should throw error when filename is empty', () => {
       // Arrange

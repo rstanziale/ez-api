@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
 import { fs, vol } from 'memfs';
-import { beforeAll, describe, expect, it, vi } from 'vitest';
+import { beforeAll, describe, expect, it, test, vi } from 'vitest';
 
 import {
   createConfigFile,
@@ -93,33 +93,21 @@ describe.concurrent('api:new scripts', () => {
   });
 
   describe.concurrent('createProjectDir', () => {
-    it('should create a new project directory', () => {
-      // Arrange
-      vi.spyOn(fs, 'mkdirSync');
-      const dir = 'new-project';
-      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
+    test.each([['new-project'], ['nested/project/dir']])(
+      'should create a new project directory for dir: %s',
+      dir => {
+        // Arrange
+        vi.spyOn(fs, 'mkdirSync');
+        const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
 
-      // Act
-      createProjectDir(dir);
+        // Act
+        createProjectDir(dir);
 
-      // Assert
-      expect(existsSync(sourceDir)).toBe(true);
-      expect(mkdirSync).toHaveBeenCalledWith(sourceDir, { recursive: true });
-    });
-
-    it('should create nested directories if they do not exist', () => {
-      // Arrange
-      vi.spyOn(fs, 'mkdirSync');
-      const dir = 'nested/project/dir';
-      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
-
-      // Act
-      createProjectDir(dir);
-
-      // Assert
-      expect(existsSync(sourceDir)).toBe(true);
-      expect(mkdirSync).toHaveBeenCalledWith(sourceDir, { recursive: true });
-    });
+        // Assert
+        expect(existsSync(sourceDir)).toBe(true);
+        expect(mkdirSync).toHaveBeenCalledWith(sourceDir, { recursive: true });
+      }
+    );
 
     it('should not throw an error if the directory already exists', () => {
       // Arrange
@@ -163,62 +151,26 @@ describe.concurrent('api:new scripts', () => {
   });
 
   describe.concurrent('createConfigFile', () => {
-    it('should create a config.json file with the correct content', () => {
-      // Arrange
-      vi.spyOn(fs, 'writeFileSync');
-      const dir = 'config-project';
-      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
-      fs.mkdirSync(sourceDir, { recursive: true });
+    test.each([['config-project'], ['special@config#123'], ['']])(
+      'should create a config.json file for dir: %s',
+      dir => {
+        // Arrange
+        vi.spyOn(fs, 'writeFileSync');
+        const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
+        fs.mkdirSync(sourceDir, { recursive: true });
 
-      // Act
-      createConfigFile(dir);
+        // Act
+        createConfigFile(dir);
 
-      // Assert
-      const configFilePath = resolve(sourceDir, ARCHETYPE_CONFIG_FILE);
-      expect(existsSync(configFilePath)).toBe(true);
-      const configFile = fs.readFileSync(configFilePath, 'utf-8') as string;
-      const configFileContent = JSON.parse(configFile);
-      expect(configFileContent.filename).toBe(`api-${dir}`);
-      expect(writeFileSync).toHaveBeenCalledWith(configFilePath, configFile);
-    });
-
-    it('should handle special characters in directory name', () => {
-      // Arrange
-      vi.spyOn(fs, 'writeFileSync');
-      const dir = 'special@config#123';
-      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
-      fs.mkdirSync(sourceDir, { recursive: true });
-
-      // Act
-      createConfigFile(dir);
-
-      // Assert
-      const configFilePath = resolve(sourceDir, ARCHETYPE_CONFIG_FILE);
-      expect(existsSync(configFilePath)).toBe(true);
-      const configFile = fs.readFileSync(configFilePath, 'utf-8') as string;
-      const configFileContent = JSON.parse(configFile);
-      expect(configFileContent.filename).toBe(`api-${dir}`);
-      expect(writeFileSync).toHaveBeenCalledWith(configFilePath, configFile);
-    });
-
-    it('should handle empty string input', () => {
-      // Arrange
-      vi.spyOn(fs, 'writeFileSync');
-      const dir = '';
-      const sourceDir = resolve(__dirname, '..', '..', PROJECTS_DIR, dir);
-      fs.mkdirSync(sourceDir, { recursive: true });
-
-      // Act
-      createConfigFile(dir);
-
-      // Assert
-      const configFilePath = resolve(sourceDir, ARCHETYPE_CONFIG_FILE);
-      expect(existsSync(configFilePath)).toBe(true);
-      const configFile = fs.readFileSync(configFilePath, 'utf-8') as string;
-      const configFileContent = JSON.parse(configFile);
-      expect(configFileContent.filename).toBe(`api-${dir}`);
-      expect(writeFileSync).toHaveBeenCalledWith(configFilePath, configFile);
-    });
+        // Assert
+        const configFilePath = resolve(sourceDir, ARCHETYPE_CONFIG_FILE);
+        expect(existsSync(configFilePath)).toBe(true);
+        const configFile = fs.readFileSync(configFilePath, 'utf-8') as string;
+        const configFileContent = JSON.parse(configFile);
+        expect(configFileContent.filename).toBe(`api-${dir}`);
+        expect(writeFileSync).toHaveBeenCalledWith(configFilePath, configFile);
+      }
+    );
   });
 
   describe.concurrent('createTspFiles', () => {
@@ -348,7 +300,7 @@ describe.concurrent('api:new scripts', () => {
       const packageJsonPath = resolve(__dirname, '..', '..', 'package.json');
       const packageJsonContent = {
         scripts: {
-          'build:all': 'compile:existing-project',
+          'build:all': 'build:existing-project',
         },
       };
       fs.writeFileSync(packageJsonPath, JSON.stringify(packageJsonContent, null, 2));
@@ -358,13 +310,13 @@ describe.concurrent('api:new scripts', () => {
 
       // Assert
       const updatedPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8') as string);
-      expect(updatedPackageJson.scripts[`compile:${dir}`]).toBe(
+      expect(updatedPackageJson.scripts[`build:${dir}`]).toBe(
         `node --import=tsx tools/build.ts ${dir}`
       );
       expect(updatedPackageJson.scripts[`watch:${dir}`]).toBe(
         `tsp compile projects/${dir}/main.tsp --watch --emit @typespec/openapi3`
       );
-      expect(updatedPackageJson.scripts['build:all']).toContain(`compile:${dir}`);
+      expect(updatedPackageJson.scripts['build:all']).toContain(`build:${dir}`);
       expect(writeFileSync).toHaveBeenCalledWith(
         packageJsonPath,
         JSON.stringify(updatedPackageJson, null, 2)
@@ -381,7 +333,7 @@ describe.concurrent('api:new scripts', () => {
       const packageJsonPath = resolve(__dirname, '..', '..', 'package.json');
       const packageJsonContent = {
         scripts: {
-          'build:all': 'compile:existing-project',
+          'build:all': 'build:existing-project',
         },
       };
       fs.writeFileSync(packageJsonPath, JSON.stringify(packageJsonContent, null, 2));
@@ -391,13 +343,13 @@ describe.concurrent('api:new scripts', () => {
 
       // Assert
       const updatedPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8') as string);
-      expect(updatedPackageJson.scripts[`compile:${dir}`]).toBe(
+      expect(updatedPackageJson.scripts[`build:${dir}`]).toBe(
         `node --import=tsx tools/build.ts ${dir}`
       );
       expect(updatedPackageJson.scripts[`watch:${dir}`]).toBe(
         `tsp compile projects/${dir}/main.tsp --watch --emit @typespec/openapi3`
       );
-      expect(updatedPackageJson.scripts['build:all']).toContain(`compile:${dir}`);
+      expect(updatedPackageJson.scripts['build:all']).toContain(`build:${dir}`);
       expect(writeFileSync).toHaveBeenCalledWith(
         packageJsonPath,
         JSON.stringify(updatedPackageJson, null, 2)
@@ -413,7 +365,7 @@ describe.concurrent('api:new scripts', () => {
       const packageJsonPath = resolve(__dirname, '..', '..', 'package.json');
       const packageJsonContent = {
         scripts: {
-          'build:all': 'compile:existing-project',
+          'build:all': 'build:existing-project',
         },
       };
       fs.writeFileSync(packageJsonPath, JSON.stringify(packageJsonContent, null, 2));
@@ -423,13 +375,13 @@ describe.concurrent('api:new scripts', () => {
 
       // Assert
       const updatedPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8') as string);
-      expect(updatedPackageJson.scripts[`compile:${dir}`]).toBe(
+      expect(updatedPackageJson.scripts[`build:${dir}`]).toBe(
         `node --import=tsx tools/build.ts ${dir}`
       );
       expect(updatedPackageJson.scripts[`watch:${dir}`]).toBe(
         `tsp compile projects/${dir}/main.tsp --watch --emit @typespec/openapi3`
       );
-      expect(updatedPackageJson.scripts['build:all']).toContain(`compile:${dir}`);
+      expect(updatedPackageJson.scripts['build:all']).toContain(`build:${dir}`);
       expect(writeFileSync).toHaveBeenCalledWith(
         packageJsonPath,
         JSON.stringify(updatedPackageJson, null, 2)
@@ -438,47 +390,13 @@ describe.concurrent('api:new scripts', () => {
   });
 
   describe.concurrent('toCamelCase', () => {
-    it('should convert hyphenated string to camel case', () => {
-      // Arrange
-      const input = 'my-project-name';
-      const expected = 'MyProjectName';
-
-      // Act
-      const result = toCamelCase(input);
-
-      // Assert
-      expect(result).toBe(expected);
-    });
-
-    it('should convert underscore string to camel case', () => {
-      // Arrange
-      const input = 'my_project_name';
-      const expected = 'MyProjectName';
-
-      // Act
-      const result = toCamelCase(input);
-
-      // Assert
-      expect(result).toBe(expected);
-    });
-
-    it('should handle mixed separators', () => {
-      // Arrange
-      const input = 'my-project_name';
-      const expected = 'MyProjectName';
-
-      // Act
-      const result = toCamelCase(input);
-
-      // Assert
-      expect(result).toBe(expected);
-    });
-
-    it('should handle single word', () => {
-      // Arrange
-      const input = 'project';
-      const expected = 'Project';
-
+    test.each([
+      ['my-project-name', 'MyProjectName'],
+      ['my_project_name', 'MyProjectName'],
+      ['my-project_name', 'MyProjectName'],
+      ['project', 'Project'],
+      ['my--project__name', 'MyProjectName'],
+    ])('should convert %s to camel case as %s', (input, expected) => {
       // Act
       const result = toCamelCase(input);
 
@@ -493,74 +411,16 @@ describe.concurrent('api:new scripts', () => {
       // Act & Assert
       expect(() => toCamelCase(input)).toThrow('Input is required');
     });
-
-    it('should handle multiple consecutive separators', () => {
-      // Arrange
-      const input = 'my--project__name';
-      const expected = 'MyProjectName';
-
-      // Act
-      const result = toCamelCase(input);
-
-      // Assert
-      expect(result).toBe(expected);
-    });
   });
 
   describe.concurrent('toSentence', () => {
-    it('should transform simple string', () => {
-      // Arrange
-      const input = 'hello';
-      const expected = 'Hello';
-
-      // Act
-      const result = toSentence(input);
-
-      // Assert
-      expect(result).toBe(expected);
-    });
-
-    it('should transform hyphenated string', () => {
-      // Arrange
-      const input = 'hello-world';
-      const expected = 'Hello World';
-
-      // Act
-      const result = toSentence(input);
-
-      // Assert
-      expect(result).toBe(expected);
-    });
-
-    it('should transform underscore string', () => {
-      // Arrange
-      const input = 'hello_world';
-      const expected = 'Hello World';
-
-      // Act
-      const result = toSentence(input);
-
-      // Assert
-      expect(result).toBe(expected);
-    });
-
-    it('should handle mixed separators', () => {
-      // Arrange
-      const input = 'hello-wonderful_world';
-      const expected = 'Hello Wonderful World';
-
-      // Act
-      const result = toSentence(input);
-
-      // Assert
-      expect(result).toBe(expected);
-    });
-
-    it('should preserve existing capitalization', () => {
-      // Arrange
-      const input = 'helloWorld-Api';
-      const expected = 'HelloWorld Api';
-
+    test.each([
+      ['hello', 'Hello'],
+      ['hello-world', 'Hello World'],
+      ['hello_world', 'Hello World'],
+      ['hello-wonderful_world', 'Hello Wonderful World'],
+      ['helloWorld-Api', 'HelloWorld Api'],
+    ])('should convert %s to sentence case as %s', (input, expected) => {
       // Act
       const result = toSentence(input);
 

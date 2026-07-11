@@ -1,8 +1,10 @@
 import { execSync } from 'node:child_process';
+import { join, resolve } from 'node:path';
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { getCompileCommands, runCommand } from '../src/build.ts';
+import { PROJECTS_DIR } from '../src/const/api-const.ts';
 
 vi.mock('node:child_process');
 
@@ -21,19 +23,20 @@ describe('build scripts', () => {
 
       // Assert
       expect(commands).toBeInstanceOf(Array);
-      expect(commands.length).toBe(1);
+      expect(commands).toHaveLength(1);
     });
 
     it('should return commands with yaml config files', () => {
       // Arrange
       const projectDir = 'test-project';
+      const targetDir = resolve(__dirname, '..', '..', PROJECTS_DIR, projectDir);
 
       // Act
       const commands = getCompileCommands(projectDir);
 
       // Assert
       expect(commands).toContain(
-        'tsp compile projects/test-project/main.tsp --config "./projects/test-project/tspconfig.yaml"'
+        `tsp compile projects/test-project/main.tsp --config "${join(targetDir, 'tspconfig.yaml')}"`
       );
     });
 
@@ -46,8 +49,8 @@ describe('build scripts', () => {
 
       // Assert
       commands.forEach(command => {
-        expect(command).toContain('projects/test-project/main.tsp');
-        expect(command).toContain('projects/test-project/tspconfig');
+        expect(command).toContain(`projects/test-project/main.tsp`);
+        expect(command).toContain(`${join(PROJECTS_DIR, projectDir, 'tspconfig')}`);
       });
     });
 
@@ -61,7 +64,7 @@ describe('build scripts', () => {
       // Assert
       const yamlCommand = commands[0];
       expect(yamlCommand).toMatch(
-        /tsp compile projects\/test-project\/main\.tsp --config "\.\/projects\/test-project\/tspconfig\.yaml"/
+        /tsp compile projects\/test-project\/main\.tsp --config ".*[\\/]projects[\\/]test-project[\\/]tspconfig\.yaml"/
       );
     });
 
@@ -73,7 +76,7 @@ describe('build scripts', () => {
       const commands = getCompileCommands(projectDir);
 
       // Assert
-      expect(commands.length).toBe(1);
+      expect(commands).toHaveLength(1);
       commands.forEach(command => {
         expect(command).toContain('my-test-project_123');
       });
@@ -153,6 +156,7 @@ describe('build scripts', () => {
       // Arrange
       const mockExecSync = vi.mocked(execSync);
       const projectDir = 'test-project';
+      const targetDir = resolve(__dirname, '..', '..', PROJECTS_DIR, projectDir);
 
       // Act
       const commands = getCompileCommands(projectDir);
@@ -164,7 +168,7 @@ describe('build scripts', () => {
       expect(mockExecSync).toHaveBeenCalledTimes(1);
       expect(mockExecSync).toHaveBeenNthCalledWith(
         1,
-        'tsp compile projects/test-project/main.tsp --config "./projects/test-project/tspconfig.yaml"'
+        `tsp compile projects/test-project/main.tsp --config "${join(targetDir, 'tspconfig.yaml')}"`
       );
     });
 

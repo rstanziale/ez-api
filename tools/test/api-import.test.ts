@@ -3,7 +3,7 @@ import { copyFileSync, mkdirSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
 import { fs, vol } from 'memfs';
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeAll, beforeEach, describe, expect, it, test, vi } from 'vitest';
 
 import {
   copyMainFileToProjectDir,
@@ -32,146 +32,63 @@ describe.concurrent('api:import scripts', () => {
   });
 
   describe('createTmpProjectDir', () => {
-    it('should create a temporary project directory', () => {
-      // Arrange
-      vi.spyOn(fs, 'mkdirSync');
-      const projectDir = 'test-project';
+    test.each([['test-project'], [''], ['nested/dir/project']])(
+      'should create a temporary project directory for projectDir: %s',
+      projectDir => {
+        // Arrange
+        vi.spyOn(fs, 'mkdirSync');
 
-      // Act
-      createTmpProjectDir(projectDir);
+        // Act
+        createTmpProjectDir(projectDir);
 
-      // Assert
-      expect(mkdirSync).toHaveBeenCalledWith(resolve(__dirname, '..', '..', TMP_DIR, projectDir), {
-        recursive: true,
-      });
-    });
-
-    it('should handle empty projectDir', () => {
-      // Arrange
-      vi.spyOn(fs, 'mkdirSync');
-      const projectDir = '';
-
-      // Act
-      createTmpProjectDir(projectDir);
-
-      // Assert
-      expect(mkdirSync).toHaveBeenCalledWith(resolve(__dirname, '..', '..', TMP_DIR, projectDir), {
-        recursive: true,
-      });
-    });
-
-    it('should handle nested projectDir', () => {
-      // Arrange
-      vi.spyOn(fs, 'mkdirSync');
-      const projectDir = 'nested/dir/project';
-
-      // Act
-      createTmpProjectDir(projectDir);
-
-      // Assert
-      expect(mkdirSync).toHaveBeenCalledWith(resolve(__dirname, '..', '..', TMP_DIR, projectDir), {
-        recursive: true,
-      });
-    });
+        // Assert
+        expect(mkdirSync).toHaveBeenCalledWith(
+          resolve(__dirname, '..', '..', TMP_DIR, projectDir),
+          {
+            recursive: true,
+          }
+        );
+      }
+    );
   });
 
   describe('deleteTmpProjectDir', () => {
-    it('should delete a temporary project directory', () => {
-      // Arrange
-      vi.spyOn(fs, 'rmSync');
-      const projectDir = 'test-project';
+    test.each([['test-project'], [''], ['nested/dir/project']])(
+      'should delete a temporary project directory for projectDir: %s',
+      projectDir => {
+        // Arrange
+        vi.spyOn(fs, 'rmSync');
+        mkdirSync(resolve(__dirname, '..', '..', TMP_DIR, projectDir), { recursive: true });
 
-      // Act
-      deleteTmpProjectDir(projectDir);
+        // Act
+        deleteTmpProjectDir(projectDir);
 
-      // Assert
-      expect(rmSync).toHaveBeenCalledWith(resolve(__dirname, '..', '..', TMP_DIR, projectDir), {
-        recursive: true,
-      });
-    });
-
-    it('should handle empty projectDir', () => {
-      // Arrange
-      vi.spyOn(fs, 'rmSync');
-      const projectDir = '';
-
-      // Act
-      deleteTmpProjectDir(projectDir);
-
-      // Assert
-      expect(rmSync).toHaveBeenCalledWith(resolve(__dirname, '..', '..', TMP_DIR, projectDir), {
-        recursive: true,
-      });
-    });
-
-    it('should handle nested projectDir', () => {
-      // Arrange
-      vi.spyOn(fs, 'rmSync');
-      const projectDir = 'nested/dir/project';
-      mkdirSync(resolve(__dirname, '..', '..', TMP_DIR, projectDir), { recursive: true });
-
-      // Act
-      deleteTmpProjectDir(projectDir);
-
-      // Assert
-      expect(rmSync).toHaveBeenCalledWith(resolve(__dirname, '..', '..', TMP_DIR, projectDir), {
-        recursive: true,
-      });
-    });
+        // Assert
+        expect(rmSync).toHaveBeenCalledWith(resolve(__dirname, '..', '..', TMP_DIR, projectDir), {
+          recursive: true,
+        });
+      }
+    );
   });
 
   describe('importOasFile', () => {
-    it('should call execSync with correct command', () => {
-      // Arrange
-      const projectDir = 'test-project';
-      const pathFile = 'api.yaml';
-      const targetDir = resolve(__dirname, '..', '..', TMP_DIR, projectDir);
+    test.each([
+      ['test-project', 'api.yaml'],
+      ['', 'api.yaml'],
+      ['proj', 'my api.yaml'],
+    ])(
+      'should execute tsp-openapi3 command for projectDir: %s and pathFile: %s',
+      (projectDir, pathFile) => {
+        // Arrange
+        const targetDir = resolve(__dirname, '..', '..', TMP_DIR, projectDir);
 
-      // Act
-      importOasFile(projectDir, pathFile);
+        // Act
+        importOasFile(projectDir, pathFile);
 
-      // Assert
-      expect(execSync).toHaveBeenCalledWith(`tsp-openapi3 ${pathFile} --output-dir ${targetDir}`);
-    });
-
-    it('should handle empty projectDir', () => {
-      // Arrange
-      const projectDir = '';
-      const pathFile = 'api.yaml';
-      const targetDir = resolve(__dirname, '..', '..', TMP_DIR, projectDir);
-
-      // Act
-      importOasFile(projectDir, pathFile);
-
-      // Assert
-      expect(execSync).toHaveBeenCalledWith(`tsp-openapi3 ${pathFile} --output-dir ${targetDir}`);
-    });
-
-    it('should handle empty projectDir', () => {
-      // Arrange
-      const projectDir = '';
-      const pathFile = 'api.yaml';
-      const targetDir = resolve(__dirname, '..', '..', TMP_DIR, projectDir);
-
-      // Act
-      importOasFile(projectDir, pathFile);
-
-      // Assert
-      expect(execSync).toHaveBeenCalledWith(`tsp-openapi3 ${pathFile} --output-dir ${targetDir}`);
-    });
-
-    it('should handle pathFile with spaces', () => {
-      // Arrange
-      const projectDir = 'proj';
-      const pathFile = 'my api.yaml';
-      const targetDir = resolve(__dirname, '..', '..', TMP_DIR, projectDir);
-
-      // Act
-      importOasFile(projectDir, pathFile);
-
-      // Assert
-      expect(execSync).toHaveBeenCalledWith(`tsp-openapi3 ${pathFile} --output-dir ${targetDir}`);
-    });
+        // Assert
+        expect(execSync).toHaveBeenCalledWith(`tsp-openapi3 ${pathFile} --output-dir ${targetDir}`);
+      }
+    );
   });
 
   describe('copyMainFileToProjectDir', () => {
