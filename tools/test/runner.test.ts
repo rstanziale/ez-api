@@ -2,8 +2,14 @@ import { exec } from 'node:child_process';
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { buildCommands } from '../runner.ts';
-import { runParallel, runSequential } from '../src/runner.ts';
+import {
+  buildCommands,
+  getPackageScripts,
+  parseMode,
+  parseTasks,
+  runParallel,
+  runSequential,
+} from '../src/runner.ts';
 
 vi.mock('node:child_process');
 
@@ -69,7 +75,27 @@ describe('runner', () => {
     await expect(runSequential(['echo fail'])).rejects.toThrow('boom');
   });
 
-  it('should run package.json scripts as npm commands', () => {
+  it('should parse the execution mode', () => {
+    expect(parseMode([])).toBe('sequential');
+    expect(parseMode(['-s'])).toBe('sequential');
+    expect(parseMode(['-p'])).toBe('parallel');
+  });
+
+  it('should parse the task list and ignore mode flags', () => {
+    expect(parseTasks(['-s', 'build:i18n-resources', '-p', 'build:another-project'])).toEqual([
+      'build:i18n-resources',
+      'build:another-project',
+    ]);
+  });
+
+  it('should read package.json scripts from the workspace root', () => {
+    const scripts = getPackageScripts();
+
+    expect(scripts.has('build:all')).toBe(true);
+    expect(scripts.has('build:i18n-resources')).toBe(true);
+  });
+
+  it('should run package.json scripts as pnpm commands', () => {
     // Arrange
     const projectDir = 'test-project';
     const scripts = new Set([`build:${projectDir}`]);
@@ -78,7 +104,7 @@ describe('runner', () => {
     const commands = buildCommands(`build:${projectDir}`, scripts);
 
     // Assert
-    expect(commands).toEqual(['npm run build:test-project']);
+    expect(commands).toEqual(['pnpm run build:test-project']);
   });
 
   it('should default to empty list without errors', async () => {

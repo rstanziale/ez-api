@@ -13,15 +13,15 @@ import {
 } from '../src/api-import.ts';
 import { PROJECTS_DIR, TMP_DIR } from '../src/const/api-const.ts';
 
-describe.concurrent('api:import scripts', () => {
-  // Tell vitest to use fs mock from __mocks__ folder
-  // This can be done in a setup file if fs should always be mocked
-  vi.mock('node:fs');
-  vi.mock('node:fs/promises');
-  vi.mock('child_process', () => ({
-    execSync: vi.fn(),
-  }));
+// Tell vitest to use fs mock from __mocks__ folder
+// This can be done in a setup file if fs should always be mocked
+vi.mock('node:fs');
+vi.mock('node:fs/promises');
+vi.mock('child_process', () => ({
+  execSync: vi.fn(),
+}));
 
+describe.concurrent('api:import scripts', () => {
   beforeAll(() => {
     // Reset the state of in-memory fs
     vol.reset();

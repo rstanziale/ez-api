@@ -7,12 +7,12 @@ import { beforeEach, describe, expect, it, test, vi } from 'vitest';
 import { ARCHETYPE_CONFIG_FILE, PROJECTS_DIR } from '../src/const/api-const.ts';
 import { getFilenames, getVersion, setDistFiles, setFilenameVersion } from '../src/postbuild.ts';
 
-describe('postbuild scripts', () => {
-  // Tell vitest to use fs mock from __mocks__ folder
-  // This can be done in a setup file if fs should always be mocked
-  vi.mock('node:fs');
-  vi.mock('node:fs/promises');
+// Tell vitest to use fs mock from __mocks__ folder
+// This can be done in a setup file if fs should always be mocked
+vi.mock('node:fs');
+vi.mock('node:fs/promises');
 
+describe('postbuild scripts', () => {
   beforeEach(() => {
     // Reset the state of in-memory fs
     vol.reset();
