@@ -4,7 +4,7 @@ A robust API development toolkit powered by [TypeSpec](https://typespec.io/), en
 
 ## Overview
 
-ez-api leverages Microsoft's TypeSpec to define and maintain consistent APIs across projects. This toolkit streamlines the API development workflow with powerful developer experience (DX) features.
+`ez-api` leverages Microsoft's TypeSpec to define and maintain consistent APIs across projects. This toolkit streamlines the API development workflow with powerful developer experience (DX) features.
 
 ## Features
 
@@ -18,11 +18,11 @@ ez-api leverages Microsoft's TypeSpec to define and maintain consistent APIs acr
 
 ### Prerequisites
 
-- Node.js (v20 or higher)
-- TypeSpec CLI (`npm install -g @typespec/compiler`)
-- pnpm package manager (`npm install -g pnpm`)
+- Node.js (v22 or higher)
+- pnpm package manager (via Corepack, or install it with `npm install -g pnpm`)
+- TypeSpec CLI (`pnpm add -g @typespec/compiler`)
 - Visual Studio Code as editor
-- Official TypeSpec VSCode extension
+- Official TypeSpec VS Code extension
 
 ### Installation
 
@@ -48,8 +48,8 @@ pnpm run api:import my-awesome-api path/to/openapi.yaml
 
 ```json
 {
-    "filename": "api-my-awesome-api",
-    "version": "1.0.0-beta.1"
+  "filename": "api-my-awesome-api",
+  "version": "1.0.0-beta.1"
 }
 ```
 
@@ -61,36 +61,38 @@ pnpm run build:my-awesome-api
 
 ### Project Commands
 
-- `api-import` to import existing OpenAPI specifications into a new TypeSpec project
-- `api-new` to creates a new API project using predefined archetypes
-- `build` to compile TypeSpec files and generate OpenAPI specifications files in both YAML and JSON formats
+- `api:import` to import existing OpenAPI specifications into a new TypeSpec project
+- `api:new` to create a new API project using a predefined archetype
+- `build:all` to compile all registered projects
+- `build:<YOUR_PROJECT>` to compile a single project
+- `watch:<YOUR_PROJECT>` to watch and recompile a single project
 
 ### Project Structure
 
 ```bash
 ez-api/
 ├── dist/
-│   └── my-awesome-api/
-│       ├── api-1.0.0-beta.1.yaml   # OpenAPI spec (YAML)
-│       └── api-1.0.0-beta.1.json   # OpenAPI spec (JSON)
+│   └── api-<PROJECT>/
+│       ├── api-<VERSION>.yaml     # OpenAPI spec (YAML)
+│       └── api-<VERSION>.json     # OpenAPI spec (JSON)
 ├── doc/
-│   └── my-awesome-api/
-│       ├── api-x.y.z.yaml          # Development version (YAML)
-│       └── api-x.y.z.json          # Development version (JSON)
+│   └── api-<PROJECT>/
+│       ├── api-<PROJECT>-x.y.z.yaml   # Development version (YAML)
+│       └── api-<PROJECT>-x.y.z.json   # Development version (JSON)
 ├── ext/
-│   └── <ext-name>.tsp              # TypeSpec extension file
+│   └── <ext-name>.tsp             # TypeSpec extension file
 ├── projects/
-│   └── my-awesome-api/
-│       ├── model/                  # Model definitions
-│       ├── routes/                 # API routes
-│       ├── config.json             # Project configuration
-│       ├── main.tsp                # Main TypeSpec file
-│       ├── tspconfig.yaml          # TypeSpec configuration
+│   └── <PROJECT>/
+│       ├── model/                 # Model definitions
+│       ├── routes/                # API routes
+│       ├── config.json            # Project configuration
+│       ├── main.tsp               # Main TypeSpec file
+│       └── tspconfig.yaml         # TypeSpec configuration
 ├── tools/
-│   ├── api-import.ts               # Custom project generator for importing OpenAPI specs
-│   ├── api-new.ts                  # Custom project generator according archetype
-│   ├── build.ts                    # Custom build script
-│   └── runner.ts                   # Custom task runner for executing commands
+│   ├── api-import.ts              # Custom project generator for importing OpenAPI specs
+│   ├── api-new.ts                 # Custom project generator based on the archetype
+│   ├── build.ts                   # Custom build script
+│   └── runner.ts                  # Custom task runner for executing commands
 └── package.json
 ```
 
@@ -110,10 +112,8 @@ ez-api/
 
 ### Generated Artifacts
 
-After running the `build:<YOUR_PROJECT>` command, you'll find:
-
-- `api-<YOUR_PROJECT>-<VERSION>.yaml`: OpenAPI 3.0 specification in YAML format
-- `api-<YOUR_PROJECT>-<VERSION>.json`: OpenAPI 3.0 specification in JSON format
+During development, TypeSpec emits files into `doc/api-<PROJECT>` using the placeholder pattern `api-<PROJECT>-x.y.z.yaml` and `api-<PROJECT>-x.y.z.json`.
+After the post-build step, those files are copied into `dist/api-<PROJECT>` and renamed with the version from the project's configuration, for example `api-1.0.0-beta.1.yaml` and `api-1.0.0-beta.1.json`.
 
 These files are fully compatible with any OpenAPI tooling and can be used for:
 
