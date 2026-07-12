@@ -20,9 +20,9 @@ ez-api leverages Microsoft's TypeSpec to define and maintain consistent APIs acr
 
 - Node.js (v20 or higher)
 - TypeSpec CLI (`npm install -g @typespec/compiler`)
+- pnpm package manager (`npm install -g pnpm`)
 - Visual Studio Code as editor
 - Official TypeSpec VSCode extension
-- Prettier extension for VSCode (optional)
 
 ### Installation
 
@@ -56,14 +56,14 @@ pnpm run api:import my-awesome-api path/to/openapi.yaml
 3. Build OpenAPI specifications:
 
 ```bash
-pnpm run compile:my-awesome-api
+pnpm run build:my-awesome-api
 ```
 
 ### Project Commands
 
 - `api-import` to import existing OpenAPI specifications into a new TypeSpec project
 - `api-new` to creates a new API project using predefined archetypes
-- `postbuild` to generates OpenAPI specification files in both YAML and JSON formats
+- `build` to compile TypeSpec files and generate OpenAPI specifications files in both YAML and JSON formats
 
 ### Project Structure
 
@@ -85,12 +85,12 @@ ez-api/
 │       ├── routes/                 # API routes
 │       ├── config.json             # Project configuration
 │       ├── main.tsp                # Main TypeSpec file
-│       ├── tspconfig-json.yaml     # TypeSpec configuration for JSON
-│       └── tspconfig-yaml.yaml     # TypeSpec configuration for YAML
+│       ├── tspconfig.yaml          # TypeSpec configuration
 ├── tools/
 │   ├── api-import.ts               # Custom project generator for importing OpenAPI specs
 │   ├── api-new.ts                  # Custom project generator according archetype
-│   └── postbuild.ts                # Custom build script
+│   ├── build.ts                    # Custom build script
+│   └── runner.ts                   # Custom task runner for executing commands
 └── package.json
 ```
 
@@ -98,7 +98,7 @@ ez-api/
 
 1. Define your API using TypeSpec in the `projects/<YOUR_PROJECT>` directory
 2. Use built-in TypeSpec decorators for API customization
-3. Run the `compile:<YOUR_PROJECT>` command to generate OpenAPI specifications
+3. Run the `build:<YOUR_PROJECT>` command to generate OpenAPI specifications
 4. Validate generated specifications with your preferred OpenAPI tools
 
 ### Best Practices
@@ -110,7 +110,7 @@ ez-api/
 
 ### Generated Artifacts
 
-After running the `compile:<YOUR_PROJECT>` command, you'll find:
+After running the `build:<YOUR_PROJECT>` command, you'll find:
 
 - `api-<YOUR_PROJECT>-<VERSION>.yaml`: OpenAPI 3.0 specification in YAML format
 - `api-<YOUR_PROJECT>-<VERSION>.json`: OpenAPI 3.0 specification in JSON format
