@@ -16,7 +16,7 @@ export const getVersion = (projectDir: string): string => {
   const configJsonFile = readFileSync(join(configDir, ARCHETYPE_CONFIG_FILE), 'utf-8');
   const configJson = JSON.parse(configJsonFile);
 
-  return configJson['version'] ?? '0.0.0';
+  return configJson.version ?? '0.0.0';
 };
 
 /**
@@ -28,7 +28,7 @@ export const getFilenames = (projectDir: string): string[] => {
   const configDir = resolve(__dirname, '..', '..', PROJECTS_DIR, projectDir);
   const configJsonFile = readFileSync(join(configDir, ARCHETYPE_CONFIG_FILE), 'utf-8');
   const configJson = JSON.parse(configJsonFile);
-  const filename = configJson['filename'] ?? 'api';
+  const filename = configJson.filename ?? 'api';
 
   return ['json', 'yaml'].map(ext => `${filename}-x.y.z.${ext}`);
 };

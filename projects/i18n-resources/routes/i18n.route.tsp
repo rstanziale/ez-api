@@ -27,7 +27,9 @@ namespace I18nRoute {
       It's important to note that if a custom bundle is present, it will override the default entries.
     """)
   @get
-  @opExample(#{ parameters: #{ selector: EXAMPLE_SELECTOR, langTag: EXAMPLE_LANG_TAG } })
+  @opExample(#{
+    parameters: #{ selector: EXAMPLE_SELECTOR, langTag: EXAMPLE_LANG_TAG },
+  })
   op consumeBundle(@query selector: string, @query langTag: string): {
     @statusCode _: 200;
     @body result: BaseResponse<I18nResponseOneOf>;
@@ -42,7 +44,10 @@ namespace I18nRoute {
     """)
   @get
   @opExample(#{
-    returnType: #{ statusCode: 200, result: #{ state: #{ code: 0 }, result: #[EXAMPLE_SELECTOR] } },
+    returnType: #{
+      statusCode: 200,
+      result: #{ state: #{ code: 0 }, result: #[EXAMPLE_SELECTOR] },
+    },
   })
   op getSelectors(): {
     @statusCode statusCode: 200;
@@ -50,7 +55,10 @@ namespace I18nRoute {
   };
 
   @route("/locales")
-  @extension(BadgesExtKey, #{ color: "blue", label: "Keep locales always up-to-date" })
+  @extension(
+    BadgesExtKey,
+    #{ color: "blue", label: "Keep locales always up-to-date" }
+  )
   @summary("Get available locales")
   @doc("""
       Retrieve all available locales supported by the i18n system.

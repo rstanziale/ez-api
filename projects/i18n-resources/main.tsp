@@ -15,7 +15,10 @@ using TypeSpec.Versioning;
   Analysis documentation for _i18n_ server-side resources.
   """)
 @useAuth(BasicAuth)
-@tagMetadata("Admin", #{ description: "List of Administrative API about i18n resources" })
+@tagMetadata(
+  "Admin",
+  #{ description: "List of Administrative API about i18n resources" }
+)
 @server(
   "http://{baseUrl}{pathSpec}",
   "Backend URL (HTTP)",
