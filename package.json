@@ -37,7 +37,7 @@
     "@commitlint/config-conventional": "^21.2.0",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/node": "^26.1.1",
-    "@typespec/prettier-plugin-typespec": "^1.13.0",
+    "@typespec/prettier-plugin-typespec": "^1.14.0",
     "@vitest/coverage-v8": "^4.1.10",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.8",
