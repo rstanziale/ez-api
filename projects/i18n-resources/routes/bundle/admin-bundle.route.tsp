@@ -14,7 +14,9 @@ interface AdminBundleRoute {
       The service will return a list of two elements: **default** bundle resource and **custom** bundle resource (if any).
     """)
   @get
-  @opExample(#{ parameters: #{ selector: EXAMPLE_SELECTOR, langTag: EXAMPLE_LANG_TAG } })
+  @opExample(#{
+    parameters: #{ selector: EXAMPLE_SELECTOR, langTag: EXAMPLE_LANG_TAG },
+  })
   getBundle(@query selector: string, @query langTag: string): {
     @statusCode _: 200;
     @body result: BaseResponse<(I18nResourceCustom | I18nResource)[]>;
@@ -49,7 +51,10 @@ interface AdminBundleRoute {
   @delete
   @opExample(#{
     parameters: #{ selector: EXAMPLE_SELECTOR, langTag: EXAMPLE_LANG_TAG },
-    returnType: #{ statusCode: 200, result: #{ state: #{ code: 0 }, result: 0 } },
+    returnType: #{
+      statusCode: 200,
+      result: #{ state: #{ code: 0 }, result: 0 },
+    },
   })
   deleteBundle(@query selector: string, @query langTag: string): {
     @statusCode statusCode: 200;
@@ -69,7 +74,12 @@ interface AdminBundleRoute {
       **Note:** Only custom bundles can be updated. System bundles are read-only.
     """)
   @put
-  @opExample(#{ returnType: #{ statusCode: 200, result: #{ state: #{ code: 0 }, result: 1 } } })
+  @opExample(#{
+    returnType: #{
+      statusCode: 200,
+      result: #{ state: #{ code: 0 }, result: 1 },
+    },
+  })
   updateBundle(): {
     @statusCode statusCode: 200;
     @body result: BaseResponse<0 | 1>;

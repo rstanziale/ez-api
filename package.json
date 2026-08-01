@@ -14,7 +14,10 @@
   ],
   "scripts": {
     "prepare": "husky",
-    "format": "tsp format \"**/*.tsp\"",
+    "format": "biome format --write",
+    "format:tsp": "tsp format \"**/*.tsp\"",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
     "test": "vitest",
     "api:new": "node --import=tsx tools/api-new.ts",
     "api:import": "node --import=tsx tools/api-import.ts",
@@ -33,19 +36,17 @@
     "@typespec/versioning": "latest"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.5.6",
     "@commitlint/cli": "^21.2.1",
     "@commitlint/config-conventional": "^21.2.0",
-    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/node": "^26.1.2",
-    "@typespec/prettier-plugin-typespec": "^1.14.0",
     "@vitest/coverage-v8": "^4.1.10",
     "husky": "^9.1.7",
-    "lint-staged": "^17.0.8",
+    "lint-staged": "^17.3.0",
     "memfs": "^4.64.0",
-    "prettier": "^3.9.5",
     "tsx": "^4.23.1",
     "typescript": "^7.0.2",
-    "vite": "^8.1.5",
+    "vite": "^8.2.0",
     "vitest": "^4.1.10"
   },
   "private": true

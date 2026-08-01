@@ -5,9 +5,9 @@ import {
   ARCHETYPE_CONFIG_FILE,
   ARCHETYPE_DIR,
   ARCHETYPE_TSP_CONFIG,
-  PROJECTS_DIR,
   PROJECT_NAME,
   PROJECT_NAMESPACE,
+  PROJECTS_DIR,
 } from './const/api-const.ts';
 
 const __dirname = import.meta.dirname;
@@ -42,7 +42,7 @@ export const createConfigFile = (projectDir: string): void => {
   const configJson = JSON.parse(configJsonFile);
 
   // Override placeholder
-  configJson['filename'] = configJson['filename'].replace(PROJECT_NAME, projectDir);
+  configJson.filename = configJson.filename.replace(PROJECT_NAME, projectDir);
 
   // Write file on project dir
   const targetDir = resolve(__dirname, '..', '..', PROJECTS_DIR, projectDir);
@@ -99,13 +99,13 @@ export const updatePackageJson = (projectDir: string): void => {
   const packageJson = JSON.parse(packageJsonFile);
 
   // Update scripts
-  packageJson['scripts'][`build:${projectDir}`] = `node --import=tsx tools/build.ts ${projectDir}`;
-  packageJson['scripts'][`watch:${projectDir}`] =
+  packageJson.scripts[`build:${projectDir}`] = `node --import=tsx tools/build.ts ${projectDir}`;
+  packageJson.scripts[`watch:${projectDir}`] =
     `tsp compile projects/${projectDir}/main.tsp --watch --emit @typespec/openapi3`;
 
   // Update build all script
-  const buildAllScript = packageJson['scripts']['build:all'];
-  packageJson['scripts']['build:all'] = buildAllScript.concat(` build:${projectDir}`);
+  const buildAllScript = packageJson.scripts['build:all'];
+  packageJson.scripts['build:all'] = buildAllScript.concat(` build:${projectDir}`);
 
   // Write package.json
   writeFileSync(join(sourceDir, 'package.json'), JSON.stringify(packageJson, null, 2));

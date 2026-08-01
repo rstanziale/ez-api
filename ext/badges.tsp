@@ -7,7 +7,10 @@ alias BadgesExtKey = "x-badges";
  * It accepts an object as a value
  * For blue badge, it accepts an object with custom label
  */
-alias BadgesExtValue<Color = "green" | "orange" | "red" | "blue", Label extends string = string> = {
+alias BadgesExtValue<
+  Color = "green" | "orange" | "red" | "blue",
+  Label extends string = string
+> = {
   color: Color;
   label: Label;
 };
