@@ -99,7 +99,7 @@ export const updatePackageJson = (projectDir: string): void => {
   const packageJson = JSON.parse(packageJsonFile);
 
   // Update scripts
-  packageJson.scripts[`build:${projectDir}`] = `node --import=tsx tools/build.ts ${projectDir}`;
+  packageJson.scripts[`build:${projectDir}`] = `node tools/build.ts ${projectDir}`;
   packageJson.scripts[`watch:${projectDir}`] =
     `tsp compile projects/${projectDir}/main.tsp --watch --emit @typespec/openapi3`;
 
