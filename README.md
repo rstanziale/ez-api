@@ -18,7 +18,7 @@ A robust API development toolkit powered by [TypeSpec](https://typespec.io/), en
 
 ### Prerequisites
 
-- Node.js (v22 or higher)
+- Node.js 22.18 or higher
 - pnpm package manager (via Corepack, or install it with `npm install -g pnpm`)
 - TypeSpec CLI (`pnpm add -g @typespec/compiler`)
 - Visual Studio Code as editor

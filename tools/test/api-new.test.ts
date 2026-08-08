@@ -310,9 +310,7 @@ describe.concurrent('api:new scripts', () => {
 
       // Assert
       const updatedPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8') as string);
-      expect(updatedPackageJson.scripts[`build:${dir}`]).toBe(
-        `node --import=tsx tools/build.ts ${dir}`
-      );
+      expect(updatedPackageJson.scripts[`build:${dir}`]).toBe(`node tools/build.ts ${dir}`);
       expect(updatedPackageJson.scripts[`watch:${dir}`]).toBe(
         `tsp compile projects/${dir}/main.tsp --watch --emit @typespec/openapi3`
       );
@@ -343,9 +341,7 @@ describe.concurrent('api:new scripts', () => {
 
       // Assert
       const updatedPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8') as string);
-      expect(updatedPackageJson.scripts[`build:${dir}`]).toBe(
-        `node --import=tsx tools/build.ts ${dir}`
-      );
+      expect(updatedPackageJson.scripts[`build:${dir}`]).toBe(`node tools/build.ts ${dir}`);
       expect(updatedPackageJson.scripts[`watch:${dir}`]).toBe(
         `tsp compile projects/${dir}/main.tsp --watch --emit @typespec/openapi3`
       );
@@ -375,9 +371,7 @@ describe.concurrent('api:new scripts', () => {
 
       // Assert
       const updatedPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8') as string);
-      expect(updatedPackageJson.scripts[`build:${dir}`]).toBe(
-        `node --import=tsx tools/build.ts ${dir}`
-      );
+      expect(updatedPackageJson.scripts[`build:${dir}`]).toBe(`node tools/build.ts ${dir}`);
       expect(updatedPackageJson.scripts[`watch:${dir}`]).toBe(
         `tsp compile projects/${dir}/main.tsp --watch --emit @typespec/openapi3`
       );
