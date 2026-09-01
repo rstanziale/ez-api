@@ -10,22 +10,22 @@ importers:
     dependencies:
       '@typespec/compiler':
         specifier: latest
-        version: 1.14.0(@types/node@26.1.2)
+        version: 1.15.0(@types/node@26.1.2)
       '@typespec/http':
         specifier: latest
-        version: 1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2))
+        version: 1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2))
       '@typespec/openapi':
         specifier: latest
-        version: 1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2))(@typespec/http@1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2)))
+        version: 1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2))(@typespec/http@1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2)))
       '@typespec/openapi3':
         specifier: latest
-        version: 1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2))(@typespec/http@1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2)))(@typespec/openapi@1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2))(@typespec/http@1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2))))(@typespec/versioning@0.84.0(@typespec/compiler@1.14.0(@types/node@26.1.2)))
+        version: 1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2))(@typespec/http@1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2)))(@typespec/openapi@1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2))(@typespec/http@1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2))))(@typespec/versioning@0.85.0(@typespec/compiler@1.15.0(@types/node@26.1.2)))
       '@typespec/rest':
         specifier: latest
-        version: 0.84.0(@typespec/compiler@1.14.0(@types/node@26.1.2))(@typespec/http@1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2)))
+        version: 0.85.0(@typespec/compiler@1.15.0(@types/node@26.1.2))(@typespec/http@1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2)))
       '@typespec/versioning':
         specifier: latest
-        version: 0.84.0(@typespec/compiler@1.14.0(@types/node@26.1.2))
+        version: 0.85.0(@typespec/compiler@1.15.0(@types/node@26.1.2))
     devDependencies:
       '@biomejs/biome':
         specifier: 2.5.6
@@ -786,34 +786,34 @@ packages:
     peerDependencies:
       '@typespec/compiler': ^1.10.0
 
-  '@typespec/compiler@1.14.0':
-    resolution: {integrity: sha512-RRN0LGVDlonG/IbB2b4mvRjdCo6LywwB9/J8lOp6UaH7vtaFnKe5FL+rpxhof4rXx/zI/4OWnQO6c01bTCz4/Q==}
+  '@typespec/compiler@1.15.0':
+    resolution: {integrity: sha512-NbCIRAIzyozchlSaGPVuyV43bC+y+OpXYCuT+8M8kt35Ln9zWzLFcIt7irofQ5QUXBZrHsBFpI5fTOFdCGeWCA==}
     engines: {node: '>=22.0.0'}
     hasBin: true
 
-  '@typespec/http@1.14.0':
-    resolution: {integrity: sha512-W+heCzu8K63AVcoX8MachVWaRxSAMFWOI1yBTc2Kq8QHaJeDiLL5JbU8VfTZ4tL/6EoGSdKfIT5ZNRW7oVCzhg==}
+  '@typespec/http@1.15.0':
+    resolution: {integrity: sha512-LNyzYHyX3C0xyQQ262jhvIaVzTn7DqiDB2gz45w1m6ngJH9ArGU8XjO3o7PaZkl/nuB5MTpImnsXpHIV1rbi4Q==}
     engines: {node: '>=22.0.0'}
     peerDependencies:
-      '@typespec/compiler': ^1.14.0
-      '@typespec/streams': ^0.84.0
+      '@typespec/compiler': ^1.15.0
+      '@typespec/streams': ^0.85.0
     peerDependenciesMeta:
       '@typespec/streams':
         optional: true
 
-  '@typespec/openapi3@1.14.0':
-    resolution: {integrity: sha512-14wjep65fvxWQHObYMaT2zISzwfdkArQ2SPkM7+t5pvAWMwKn4dnv7rSP4QRvxqjaiLsQAz7GT1SS8DaX9BhgA==}
+  '@typespec/openapi3@1.15.0':
+    resolution: {integrity: sha512-Gc6OjBiAtPo3ohlkrDxQKt8+xdeR54tC+Cgu3YLlxUxrWHWYOfWQXzp4NX+sraiFjF6kX7t0G1A1kY7rgy73qw==}
     engines: {node: '>=22.0.0'}
     hasBin: true
     peerDependencies:
-      '@typespec/compiler': ^1.14.0
-      '@typespec/events': ^0.84.0
-      '@typespec/http': ^1.14.0
-      '@typespec/json-schema': ^1.14.0
-      '@typespec/openapi': ^1.14.0
-      '@typespec/sse': ^0.84.0
-      '@typespec/streams': ^0.84.0
-      '@typespec/versioning': ^0.84.0
+      '@typespec/compiler': ^1.15.0
+      '@typespec/events': ^0.85.0
+      '@typespec/http': ^1.15.0
+      '@typespec/json-schema': ^1.15.0
+      '@typespec/openapi': ^1.15.0
+      '@typespec/sse': ^0.85.0
+      '@typespec/streams': ^0.85.0
+      '@typespec/versioning': ^0.85.0
       '@typespec/xml': '*'
     peerDependenciesMeta:
       '@typespec/events':
@@ -829,25 +829,25 @@ packages:
       '@typespec/xml':
         optional: true
 
-  '@typespec/openapi@1.14.0':
-    resolution: {integrity: sha512-KL7kImPhCXRmxpHVt1k7TWaa4bb3NbSeUx2rxyxeq7lYZFllI6/NYRCTOI/5JOrbElWmmSxrajU9K9IAKI6PkQ==}
+  '@typespec/openapi@1.15.0':
+    resolution: {integrity: sha512-lHd3H5W23KOIGKyBPKpBLPHVOxcxuvqOBXGqlyPvGmHDgmD74mrUtHWxNoGx+QQESjx4tS8Tu6URNQBU6y6Q1Q==}
     engines: {node: '>=22.0.0'}
     peerDependencies:
-      '@typespec/compiler': ^1.14.0
-      '@typespec/http': ^1.14.0
+      '@typespec/compiler': ^1.15.0
+      '@typespec/http': ^1.15.0
 
-  '@typespec/rest@0.84.0':
-    resolution: {integrity: sha512-9s5dDfRoHRPdtbVvkBasUx/RnMvwWMTuXRieSQDEji4gWGgxVu4Zt4MiEEKSfQrkMr3Aw0QjRCSxBxjMCHIOmA==}
+  '@typespec/rest@0.85.0':
+    resolution: {integrity: sha512-ogbot1wp8jLn0rSOzwHjMjgDot+1u7WFZOWluRHL3cuRw9l8+ZjlixBrkXZ84dKP54RoYUN3buBjfOZ7qyHeyg==}
     engines: {node: '>=22.0.0'}
     peerDependencies:
-      '@typespec/compiler': ^1.14.0
-      '@typespec/http': ^1.14.0
+      '@typespec/compiler': ^1.15.0
+      '@typespec/http': ^1.15.0
 
-  '@typespec/versioning@0.84.0':
-    resolution: {integrity: sha512-ZoDasTDj4z0mgFK+0cJL2+7DduCaTjvICHL2nQ/RBWc7nLgObaIYCjvXLno8WneDXnpxCAr7larN4/nlHEv9fg==}
+  '@typespec/versioning@0.85.0':
+    resolution: {integrity: sha512-8qIbWBnIWor3p9DFzcVz4xU4YK6PFgMia4+IDczhb5G4J9bYquK9gJSFNPfoF86Foq9nHad83swX25kxRiS6Jw==}
     engines: {node: '>=22.0.0'}
     peerDependencies:
-      '@typespec/compiler': ^1.14.0
+      '@typespec/compiler': ^1.15.0
 
   '@vitest/coverage-v8@4.1.10':
     resolution: {integrity: sha512-IM49HmthevbgAO4anp1hwtoT9wYe59w0LR00gr+eagHE+ZJ5lK4sLPeO0ubgoJcwLk6dehU3R24N+FbEEKDc8g==}
@@ -2171,11 +2171,11 @@ snapshots:
   '@typescript/typescript-win32-x64@7.0.2':
     optional: true
 
-  '@typespec/asset-emitter@0.79.1(@typespec/compiler@1.14.0(@types/node@26.1.2))':
+  '@typespec/asset-emitter@0.79.1(@typespec/compiler@1.15.0(@types/node@26.1.2))':
     dependencies:
-      '@typespec/compiler': 1.14.0(@types/node@26.1.2)
+      '@typespec/compiler': 1.15.0(@types/node@26.1.2)
 
-  '@typespec/compiler@1.14.0(@types/node@26.1.2)':
+  '@typespec/compiler@1.15.0(@types/node@26.1.2)':
     dependencies:
       '@babel/code-frame': 7.29.7
       '@inquirer/prompts': 8.5.2(@types/node@26.1.2)
@@ -2196,36 +2196,36 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@typespec/http@1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2))':
+  '@typespec/http@1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2))':
     dependencies:
-      '@typespec/compiler': 1.14.0(@types/node@26.1.2)
+      '@typespec/compiler': 1.15.0(@types/node@26.1.2)
 
-  '@typespec/openapi3@1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2))(@typespec/http@1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2)))(@typespec/openapi@1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2))(@typespec/http@1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2))))(@typespec/versioning@0.84.0(@typespec/compiler@1.14.0(@types/node@26.1.2)))':
+  '@typespec/openapi3@1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2))(@typespec/http@1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2)))(@typespec/openapi@1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2))(@typespec/http@1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2))))(@typespec/versioning@0.85.0(@typespec/compiler@1.15.0(@types/node@26.1.2)))':
     dependencies:
       '@scalar/json-magic': 0.12.19
       '@scalar/openapi-parser': 0.28.11
       '@scalar/openapi-types': 0.9.4
-      '@typespec/asset-emitter': 0.79.1(@typespec/compiler@1.14.0(@types/node@26.1.2))
-      '@typespec/compiler': 1.14.0(@types/node@26.1.2)
-      '@typespec/http': 1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2))
-      '@typespec/openapi': 1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2))(@typespec/http@1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2)))
+      '@typespec/asset-emitter': 0.79.1(@typespec/compiler@1.15.0(@types/node@26.1.2))
+      '@typespec/compiler': 1.15.0(@types/node@26.1.2)
+      '@typespec/http': 1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2))
+      '@typespec/openapi': 1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2))(@typespec/http@1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2)))
       yaml: 2.9.0
     optionalDependencies:
-      '@typespec/versioning': 0.84.0(@typespec/compiler@1.14.0(@types/node@26.1.2))
+      '@typespec/versioning': 0.85.0(@typespec/compiler@1.15.0(@types/node@26.1.2))
 
-  '@typespec/openapi@1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2))(@typespec/http@1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2)))':
+  '@typespec/openapi@1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2))(@typespec/http@1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2)))':
     dependencies:
-      '@typespec/compiler': 1.14.0(@types/node@26.1.2)
-      '@typespec/http': 1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2))
+      '@typespec/compiler': 1.15.0(@types/node@26.1.2)
+      '@typespec/http': 1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2))
 
-  '@typespec/rest@0.84.0(@typespec/compiler@1.14.0(@types/node@26.1.2))(@typespec/http@1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2)))':
+  '@typespec/rest@0.85.0(@typespec/compiler@1.15.0(@types/node@26.1.2))(@typespec/http@1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2)))':
     dependencies:
-      '@typespec/compiler': 1.14.0(@types/node@26.1.2)
-      '@typespec/http': 1.14.0(@typespec/compiler@1.14.0(@types/node@26.1.2))
+      '@typespec/compiler': 1.15.0(@types/node@26.1.2)
+      '@typespec/http': 1.15.0(@typespec/compiler@1.15.0(@types/node@26.1.2))
 
-  '@typespec/versioning@0.84.0(@typespec/compiler@1.14.0(@types/node@26.1.2))':
+  '@typespec/versioning@0.85.0(@typespec/compiler@1.15.0(@types/node@26.1.2))':
     dependencies:
-      '@typespec/compiler': 1.14.0(@types/node@26.1.2)
+      '@typespec/compiler': 1.15.0(@types/node@26.1.2)
 
   '@vitest/coverage-v8@4.1.10(vitest@4.1.10)':
     dependencies:
