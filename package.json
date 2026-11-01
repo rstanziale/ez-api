@@ -39,17 +39,17 @@
     "@typespec/versioning": "latest"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.6",
-    "@commitlint/cli": "^21.2.2",
-    "@commitlint/config-conventional": "^21.2.3",
-    "@types/node": "^26.4.0",
-    "@vitest/coverage-v8": "^5.0.2",
+    "@biomejs/biome": "2.6.4",
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "@types/node": "^26.6.6",
+    "@vitest/coverage-v8": "^5.0.5",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
-    "memfs": "^4.68.2",
+    "memfs": "^4.80.0",
     "typescript": "^7.0.2",
-    "vite": "^8.3.3",
-    "vitest": "^5.0.2"
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
   },
   "private": true
 }
